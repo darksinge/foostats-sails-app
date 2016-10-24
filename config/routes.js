@@ -48,9 +48,9 @@ module.exports.routes = {
    },
 
    //Login routes
-   '/auth/facebook': 'LoginController.facebook',
-
-   '/auth/facebook/callback': 'LoginController.facebookCallback',
+   '/auth/facebook': 'AuthController.facebook',
+   '/auth/facebook/callback': 'AuthController.facebookCallback',
+   '/logout': 'AuthController.facebookLogout',
 
    // Admin routes
    '/admin': 'AdminController.admin',

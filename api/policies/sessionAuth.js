@@ -20,7 +20,7 @@ module.exports = function(req, res, next) {
    // or if this is the last policy, the controller
 
    if (process.env.NODE_ENV === 'development') {
-      console.log('route ' + req.route.path + ' :: security bypass - development mode')
+      sails.log.info('Security bypass on route ' + req.route.path)
       return next();
    } else if (req.headers.token != process.env.API_TOKEN) {
       return res.forbidden('You are not permitted to perform this action.');
@@ -34,6 +34,8 @@ module.exports = function(req, res, next) {
       return next();
    }
 
+   // functions below this line are not currently being used for authentication,
+   // I'm just keeping them around just in case.
    next();
 
 

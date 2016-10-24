@@ -9,7 +9,54 @@
 * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
 */
 
-var passport = require('passport');
+var passport = require('passport')
+    , FacebookStrategy = require('passport-facebook').Strategy
+
+    var verifyHandler = function(acessToken, refreshToken, profile, done) {
+        process.nextTick(function() {
+            var values = profile._json;
+            Player.findOne({email: values.email}, function(err, user) {
+
+                if (err) {
+                    return done(err);
+                } else if (user) {
+                    return done(null, user);
+                } else {
+                    var newUser = {};
+
+                    newUser.facebookId    = values.id;
+                    newUser.facebookToken = acessToken;
+                    newUser.name          = values.name;
+                    newUser.email         = values.email;
+
+                    Player.create(newUser).exec(function(err, user) {
+                        if (err) return done(err);
+                        sails.log.info('Created new user!');
+                        return done(null, user);
+                    });
+                }
+            });
+        });
+    };
+
+    // where does 'user' come from? hmm???
+    //
+    passport.serializeUser(function(user, done) {
+        return done(null, user.uuid);
+    });
+
+    passport.deserializeUser(function(uuid, done) {
+        Player.findOne({uuid:uuid}).exec(function(err, player) {
+            return done(err, player);
+        });
+    });
+
+    passport.use(new FacebookStrategy({
+        clientID: process.env.FACEBOOK_APP_ID,
+        clientSecret: process.env.FACEBOOK_APP_SECRET,
+        callbackURL: process.env.NODE_ENV === 'production' ? 'https://foostats.herokuapp.com/auth/facebook/callback' : 'http://localhost:1337/auth/facebook/callback',
+        profileFields: ['id', 'name', 'email']
+    }, verifyHandler));
 
 module.exports.http = {
 
@@ -26,8 +73,8 @@ module.exports.http = {
    middleware: {
 
 
-
-
+       passportInit: passport.initialize(),
+       passportSession: passport.session(),
       /***************************************************************************
       *                                                                          *
       * The order in which middleware should be run for HTTP request. (the Sails *
@@ -39,6 +86,8 @@ module.exports.http = {
          'startRequestTimer',
          'cookieParser',
          'session',
+         'passportInit',
+         'passportSession',
          'myRequestLogger',
          'bodyParser',
          'handleBodyParserError',
@@ -58,14 +107,6 @@ module.exports.http = {
       * custom middleware
       *                                                                           *
       ****************************************************************************/
-
-         customMiddleware: function(app) {
-            app.use(function(req, res, next) {
-               PassportService.init();
-               next();
-            })
-         }
-
 
       /***************************************************************************
       *                                                                          *
