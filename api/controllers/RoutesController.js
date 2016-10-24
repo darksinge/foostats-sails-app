@@ -15,11 +15,4 @@ module.exports = {
    docs: function(req, res) {
       res.view('docs', {responses: responses});
    },
-
-   admin: function(req, res) {
-      res.view('admin')
-   },
-
-
-
 }

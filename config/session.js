@@ -31,9 +31,9 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-  cookie: {
-    maxAge: 1000 * 60 * 10, // 10 minutes
-  },
+  // cookie: {
+  //   maxAge: 1000 * 60 * 60 * 24,
+  // },
 
   /***************************************************************************
   *                                                                          *
@@ -55,7 +55,7 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-  host: 'localhost',
+  host: process.env.NODE_ENV === 'development' ? 'localhost' : 'https://foostats.herokuapp.com',
   // port: 6379,
   // ttl: <redis session TTL in seconds>,
   // db: 0,

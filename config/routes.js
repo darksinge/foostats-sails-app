@@ -20,6 +20,8 @@
 * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
 */
 
+var responses = require('../assets/responses');
+
 module.exports.routes = {
 
     /***************************************************************************
@@ -37,21 +39,28 @@ module.exports.routes = {
       policy: 'https',
    },
 
-   '/admin': 'RoutesController.admin',
+   '/docs': {
+     view: 'docs',
+     policy: 'https',
+     locals: {
+       responses: responses,
+     }
+   },
 
-   '/docs': 'RoutesController.docs',
+   //Login routes
+   '/auth/facebook': 'AuthController.facebook',
+   '/auth/facebook/callback': 'AuthController.facebookCallback',
+   '/logout': 'AuthController.facebookLogout',
 
+   // Admin routes
+   '/admin': 'AdminController.admin',
+   'put /admin/update/player': 'AdminController.adminUpdate',
+   'post /admin/create/player': 'AdminController.adminCreate',
 
-   '/auth/facebook': 'PassportController.facebook',
+   // User routes
+   '/dashboard': 'UserController.dashboard',
 
-   '/auth/facebook/callback': 'PassportController.facebookCallback',
-
-   '/dashboard': 'PassportController.dashboard',
-
-   'put /admin/update/player': 'PlayerController.adminUpdate',
-
-   'post /admin/create/player': 'PlayerController.adminCreate',
-
+   // REST API Routes
    'put /players': 'PlayerController.update',
 
     /***************************************************************************
