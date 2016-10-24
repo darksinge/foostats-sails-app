@@ -1,6 +1,6 @@
 # foosball
 
-a [Sails](http://sailsjs.org) application
+a [Sails js](http://sailsjs.org) application
 
 <h1>Foostats Mobile Application Requirements</h1>
 
