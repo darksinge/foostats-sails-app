@@ -19,6 +19,10 @@ module.exports = function(req, res, next) {
    // User is allowed, proceed to the next policy,
    // or if this is the last policy, the controller
 
+   // functions below this line are not currently being used for authentication,
+   // I'm just keeping them around just in case.
+   return next();
+
    if (process.env.NODE_ENV === 'development') {
       sails.log.info('Security bypass on route ' + req.route.path)
       return next();
@@ -32,11 +36,7 @@ module.exports = function(req, res, next) {
 
    if (req.session.authenticated) {
       return next();
-   }
-
-   // functions below this line are not currently being used for authentication,
-   // I'm just keeping them around just in case.
-   next();
+  }
 
 
    FacebookService.fetchFacebookUserAsync(req.headers, function(err, user){
