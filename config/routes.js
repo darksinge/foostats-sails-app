@@ -34,14 +34,10 @@ module.exports.routes = {
     *                                                                          *
     ***************************************************************************/
 
-   '/': {
-      view: 'homepage',
-      policy: 'https',
-   },
+   '/': 'RoutesController.index',
 
    '/docs': {
      view: 'docs',
-     policy: 'https',
      locals: {
        responses: responses,
      }

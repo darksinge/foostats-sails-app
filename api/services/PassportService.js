@@ -1,59 +1,52 @@
-//
-// var passport = require('passport')
-// , FacebookStrategy = require('passport-facebook').Strategy;
-//
-// var verifyHandler = function(token, tokenSecret, profile, done) {
-//    process.nextTick(function() {
-//       Player.findOne({facebookId: profile.id}, function(err, user) {
-//          if (user) {
-//             return done(null, user);
-//          } else {
-//
-//             var data = {};
-//
-//             if (profile.name) data.name = profile.name;
-//             if (profile.email) data.email = profile.email;
-//             if (profile.id) data.facebookId = profile.id;
-//
-//             Player.create(data).exec(function(err, player) {
-//                return done(err, player);
-//             });
-//          }
-//       });
-//    });
-// }
-//
-// passport.serializeUser(function(user, done) {
-//    done(null, user.uuid);
-// });
-//
-// passport.deserializeUser(function(uuid, done) {
-//    Player.findOne({uuid:uuid}).exec(function(err, player) {
-//       return (err, player);
-//    });
-// });
+/**
 
-var request = require('request')
-, passport = require('passport')
-, FacebookStrategy = require('passport-facebook').Strategy
-, _ = require('lodash');
+Example response => { id: '12345678910111213',
+            username: undefined,
+            displayName: undefined,
+            name: {
+                familyName: 'lastname',
+                givenName: 'firstname',
+                middleName: undefined
+            },
+            gender: undefined,
+            profileUrl: undefined,
+            emails: [ { value: 'fake@email.com' } ],
+            provider: 'facebook',
+            _raw: '{"id":"10206619507478054","last_name":"lastname","first_name":"firstname","email":"fake\\u0040email.com"}',
+            _json: {
+                id: '12345678910111213',
+                last_name: 'lastname',
+                first_name: 'firstname',
+                email: 'fake@email.com' } }
+*/
+
+var request = require('request');
+var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 var verifyHandler = function(acessToken, refreshToken, profile, done) {
     process.nextTick(function() {
-        var values = profile._json;
-        Player.findOne({email: values.email}, function(err, user) {
+
+
+        console.log('ASDFADSJFKLDSAJFKLDSJKFL 3');
+        Player.findOne({facebookId: profile.id}, function(err, user) {
+
+
 
             if (err) {
+                console.log('ERROR!!!!', err);
                 return done(err);
             } else if (user) {
+                console.log('USER!!!!!!', user);
                 return done(null, user);
             } else {
                 var newUser = {};
 
-                newUser.facebookId    = values.id;
+                newUser.facebookId    = profile.id;
                 newUser.facebookToken = acessToken;
-                newUser.name          = values.name;
-                newUser.email         = values.email;
+                newUser.firstName     = profile._json.first_name;
+                newUser.lastName      = profile._json.last_name;
+                newUser.email         = profile._json.email ? profile._json.email : newUser.firstName + newUser.lastName + '@facebook.com';
 
                 Player.create(newUser).exec(function(err, user) {
                     if (err) return done(err);
@@ -65,13 +58,14 @@ var verifyHandler = function(acessToken, refreshToken, profile, done) {
     });
 };
 
-// where does 'user' come from? hmm???
-//
+
 passport.serializeUser(function(user, done) {
+    // console.log('ASDFADSJFKLDSAJFKLDSJKFL 1');
     return cb(null, user.uuid);
 });
 
 passport.deserializeUser(function(uuid, done) {
+    // console.log('ASDFADSJFKLDSAJFKLDSJKFL 2');
     Player.findOne({uuid:uuid}).exec(function(err, player) {
         return cb(err, player);
     });
@@ -86,16 +80,16 @@ passport.use(new FacebookStrategy({
 
 module.exports = {
 
-    facebookAuth: function(req, res) {
+    facebookAuth: function(req, res, next) {
         sails.log.info(process.env.NODE_ENV === 'production' ? 'in production mode.' : 'in development mode.');
-        passport.authenticate('facebook')(req, res);
+        passport.authenticate('facebook', {scope: 'email'})//(req, res, next);
     },
 
     facebookCallback: function(req, res, next) {
         passport.authenticate('facebook', {
-            successRedirect: '/dashboard',
-            failureRedirect: '/'
-        })(req, res, next);
+            failureRedirect: '/',
+            successRedirect: '/dashboard'
+        })//(req, res, next);
     }
 
 }

@@ -55,7 +55,7 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-  host: process.env.NODE_ENV === 'development' ? 'localhost' : 'https://foostats.herokuapp.com',
+  host: process.env.IS_LOCAL_ENV === 'true' ? 'localhost' : 'https://foostats.herokuapp.com',
   // port: 6379,
   // ttl: <redis session TTL in seconds>,
   // db: 0,

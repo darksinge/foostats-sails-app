@@ -8,7 +8,10 @@
 module.exports = {
 
   dashboard: function(req, res) {
-    return res.view('user_views/dashboard');
+      console.log(req.user);
+      return res.view('userViews/dashboard', {
+          user: req.user
+      });
   },
 
 }

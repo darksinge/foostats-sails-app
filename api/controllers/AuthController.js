@@ -24,7 +24,6 @@ module.exports = {
     facebookLogout: function(req, res) {
         if (!req.session.user) return res.redirect('/')
         req.session.user = null;
-        req.session.flash = 'You have logged out';
         return res.redirect('/');
     },
 
@@ -33,18 +32,35 @@ module.exports = {
     },
 
     facebookCallback: function(req, res) {
+
         PassportService.facebookCallback(req, res, function(err, user) {
+
             if (err) {
-                sails.log.error(err);
-                // req.session.flash = 'There was an error';
+                sails.log.error('AuthController.js\n', err);
+                return res.redirect('/');
+            } else if (!user) {
+                sails.log.error('Null User passed back from facebook callback.')
                 return res.redirect('/');
             }
 
-            sails.log.info('Facebook authentication successful!');
-
-            req.session.user = user;
-            req.session.authenticated = true;
-            return res.redirect('/dashboard');
+            req.logIn(user, function(err) {
+                if (err) return res.serverError(err);
+                return res.view('/userViews/dashboard', {
+                    user: user
+                });
+            });
+            // var uuid = req.session.passport.user;
+            // Player.findOne({uuid:uuid}).exec(function(err, player) {
+            //     if ((err) || (!player)) return res.view('404');
+            //
+            //     sails.log.info('Facebook authentication successful!');
+            //
+            //     req.user = player;
+            //     req.session.authenticated = true;
+            //     return res.redirect('userViews/dashboard', {
+            //         user: req.user
+            //     });
+            // });
         });
     },
 

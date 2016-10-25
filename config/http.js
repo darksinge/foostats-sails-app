@@ -39,13 +39,13 @@ var passport = require('passport')
         });
     };
 
-    // where does 'user' come from? hmm???
-    //
     passport.serializeUser(function(user, done) {
+        console.log('SERIALIZE: ', user)
         return done(null, user.uuid);
     });
 
     passport.deserializeUser(function(uuid, done) {
+        console.log('DESERIALIZE: ', user)
         Player.findOne({uuid:uuid}).exec(function(err, player) {
             return done(err, player);
         });

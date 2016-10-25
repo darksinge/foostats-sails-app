@@ -32,7 +32,8 @@ module.exports = {
             required: true,
             unique: true
         },
-        name: 'string',
+        firstName: 'string',
+        lastName: 'string',
         teams: {
             collection: 'team',
             via: 'players'
@@ -52,7 +53,8 @@ module.exports = {
         facebookId: {
             type: 'string',
             unique: true
-        }
+        },
+        facebookToken: 'string',
 
     },
 
