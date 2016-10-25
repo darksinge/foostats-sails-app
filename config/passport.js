@@ -1,10 +1,7 @@
-
-var request = require('request');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 var verifyHandler = function(acessToken, refreshToken, profile, done) {
-    console.log('hey there');
     process.nextTick(function() {
         var values = profile._json;
         Player.findOne({email: values.email}, function(err, user) {
@@ -32,18 +29,33 @@ var verifyHandler = function(acessToken, refreshToken, profile, done) {
 };
 
 passport.serializeUser(function(user, done) {
-    return cb(null, user.uuid);
+    return done(null, user.uuid);
 });
 
 passport.deserializeUser(function(uuid, done) {
     Player.findOne({uuid:uuid}).exec(function(err, player) {
-        return cb(err, player);
+        return done(err, player);
     });
 });
 
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: process.env.IS_LOCAL_ENV === 'true' ? 'http://localhost:1337/auth/facebook/callback' : 'https://foostats.herokuapp.com/auth/facebook/callback',
+    callbackURL: process.env.NODE_ENV === 'production' ? 'https://foostats.herokuapp.com/auth/facebook/callback' : 'http://localhost:1337/auth/facebook/callback',
     profileFields: ['id', 'name', 'email']
 }, verifyHandler));
+
+module.exports.passport = {
+
+    facebookAuth: function(req, res) {
+        passport.authenticate('facebook', {scope: 'email'})(req, res);
+    },
+
+    facebookCallback: function(req, res, next) {
+        passport.authenticate('facebook', {
+            failureRedirect: '/',
+        })(req, res, next);
+    },
+
+    passport: passport,
+}

@@ -4,8 +4,6 @@
 
 */
 
-var responses = require('../../assets/responses');
-
 module.exports = {
 
    index: function(req, res) {
@@ -13,6 +11,6 @@ module.exports = {
    },
 
    docs: function(req, res) {
-      res.view('docs', {responses: responses});
+      res.view('docs', {responses: require('../../assets/responses')});
    },
 }

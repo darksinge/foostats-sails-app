@@ -26,18 +26,10 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 
 var verifyHandler = function(acessToken, refreshToken, profile, done) {
     process.nextTick(function() {
-
-
-        console.log('ASDFADSJFKLDSAJFKLDSJKFL 3');
         Player.findOne({facebookId: profile.id}, function(err, user) {
-
-
-
             if (err) {
-                console.log('ERROR!!!!', err);
                 return done(err);
             } else if (user) {
-                console.log('USER!!!!!!', user);
                 return done(null, user);
             } else {
                 var newUser = {};
@@ -61,13 +53,13 @@ var verifyHandler = function(acessToken, refreshToken, profile, done) {
 
 passport.serializeUser(function(user, done) {
     // console.log('ASDFADSJFKLDSAJFKLDSJKFL 1');
-    return cb(null, user.uuid);
+    return done(null, user.uuid);
 });
 
 passport.deserializeUser(function(uuid, done) {
     // console.log('ASDFADSJFKLDSAJFKLDSJKFL 2');
     Player.findOne({uuid:uuid}).exec(function(err, player) {
-        return cb(err, player);
+        return done(err, player);
     });
 });
 
@@ -78,18 +70,21 @@ passport.use(new FacebookStrategy({
     profileFields: ['id', 'name', 'email']
 }, verifyHandler));
 
+// passport.initialize();
+
+
 module.exports = {
 
-    facebookAuth: function(req, res, next) {
+    facebookAuth: function(req, res) {
         sails.log.info(process.env.NODE_ENV === 'production' ? 'in production mode.' : 'in development mode.');
-        passport.authenticate('facebook', {scope: 'email'})//(req, res, next);
+        passport.authenticate('facebook', {scope: 'email'})(req, res);
     },
 
     facebookCallback: function(req, res, next) {
         passport.authenticate('facebook', {
             failureRedirect: '/',
-            successRedirect: '/dashboard'
-        })//(req, res, next);
-    }
+        })(req, res, next);
+    },
+
 
 }

@@ -17,50 +17,35 @@
 
 */
 
-var passport = require('passport');
+// var passport = require('passport');
+var passport = sails.config.passport;
 
 module.exports = {
 
     facebookLogout: function(req, res) {
-        if (!req.session.user) return res.redirect('/')
-        req.session.user = null;
+        req.logout();
         return res.redirect('/');
     },
 
     facebook: function(req, res) {
-        PassportService.facebookAuth(req, res)
+        return passport.facebookAuth(req, res);
     },
 
     facebookCallback: function(req, res) {
-
-        PassportService.facebookCallback(req, res, function(err, user) {
-
+        return passport.facebookCallback(req, res, function(err) {
             if (err) {
-                sails.log.error('AuthController.js\n', err);
-                return res.redirect('/');
-            } else if (!user) {
-                sails.log.error('Null User passed back from facebook callback.')
+                sails.log.error(err);
                 return res.redirect('/');
             }
 
-            req.logIn(user, function(err) {
+            sails.log.info('Facebook authentication successful!');
+
+            req.logIn(req.user, function(err) {
                 if (err) return res.serverError(err);
-                return res.view('/userViews/dashboard', {
-                    user: user
-                });
+                return res.redirect('/dashboard');
             });
-            // var uuid = req.session.passport.user;
-            // Player.findOne({uuid:uuid}).exec(function(err, player) {
-            //     if ((err) || (!player)) return res.view('404');
-            //
-            //     sails.log.info('Facebook authentication successful!');
-            //
-            //     req.user = player;
-            //     req.session.authenticated = true;
-            //     return res.redirect('userViews/dashboard', {
-            //         user: req.user
-            //     });
-            // });
+
+
         });
     },
 
