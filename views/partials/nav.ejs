@@ -15,11 +15,11 @@
                <li><a href="/">Home</a></li>
                <li><a href="/docs">Docs</a></li>
                <li><a href="/dashboard">Dashboard</a></li>
-               {{ if (typeof user != 'undefined') { }}
-                   {{ if(user.role == 'admin') { }}
+               <? if (typeof user != 'undefined') { ?>
+                   <? if(user.role == 'admin') { ?>
                        <li><a href="/admin">Admin</a></li>
-                   {{ } }}
-               {{ } }}
+                   <? } ?>
+               <? } ?>
             </ul>
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->

@@ -4,6 +4,14 @@
 
 */
 
+var bluebird = require('bluebird');
+var Promse =
+
+var findUser(accessToken, next) {
+   Player.findOne({facebookToken: accessToken}).exec(function(err, player) {
+      return (err, player)
+   });
+}
 
 module.exports = {
 
@@ -17,7 +25,7 @@ module.exports = {
               }
           }
       }
-      
+
       if (!uuid) {
           req.flash('error', 'There was an error, please try logging in again.')
           return res.redirect('/login');
@@ -30,6 +38,7 @@ module.exports = {
               req.flash('error', 'There was an error, please try logging in again.')
               return res.redirect('/login');
           }
+          console.log('PLAYER', player);
           return res.view('userViews/dashboard', {
               user: player
           });

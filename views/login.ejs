@@ -4,6 +4,11 @@
             <h1>Login</h1>
         </div>
         <div class="panel-body">
+           <? if (locals.message) { ?>
+           <div class="panel-heading">
+              <p class="text-danger"><?= message ?></p>
+           </div>
+           <? } ?>
            <form class="" action="/auth/facebook" method="post">
               <button type="submit" class="btn btn-default" style="border:none;">
               <!-- <button onclick="displayError()" class="btn btn-default" style="border:none;"> -->

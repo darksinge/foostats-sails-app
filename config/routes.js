@@ -51,6 +51,7 @@ module.exports.routes = {
    '/admin': 'AdminController.admin',
    'put /admin/update/player': 'AdminController.adminUpdate',
    'post /admin/create/player': 'AdminController.adminCreate',
+   'post /admin/delete/player': 'AdminController.adminDelete',
 
    // User routes
    '/dashboard': 'UserController.dashboard',

@@ -1,3 +1,4 @@
+
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -15,8 +16,9 @@ var verifyHandler = function(acessToken, refreshToken, profile, done) {
 
                 newUser.facebookId    = values.id;
                 newUser.facebookToken = acessToken;
-                newUser.name          = values.name;
-                newUser.email         = values.email;
+                newUser.firstName     = values.firstName;
+                newUser.lastName      = values.lastName;
+                newUser.email         = values.email ? values.email : profile.emails[0].value || newUser.firstName + newUser.lastName + '@_no_primary_email.com'
 
                 Player.create(newUser).exec(function(err, user) {
                     if (err) return done(err);

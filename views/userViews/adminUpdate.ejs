@@ -1,0 +1,22 @@
+<div class="page-wrap">
+    <div class="page-header">
+        <div class="container">
+            <h1>Edit Users</h1>
+        </div>
+    </div>
+
+    <? if (!locals.user) { ?>
+        <h3>Oops, <small class="text-muted">there was a problem...</small></h3>
+    <? }else{ ?>
+
+    <div class="container">
+        <form class="" action="/admin/update/player?uuid={{= user.uuid }}&name" method="post">
+            First Name:
+            <input type="text" value="{{= user.firstName}}">
+            Last Name:
+            <input type="text" value="{{= user.lastName}}">
+            email:
+            <input type="text" value="{{= user.email}}">
+        </form>
+    </div>
+</div>

@@ -42,10 +42,9 @@ module.exports = {
 
             req.logIn(req.user, function(err) {
                 if (err) return res.serverError(err);
+                res.cookie('access_token', req.user.facebookToken);
                 return res.redirect('/dashboard');
             });
-
-
         });
     },
 

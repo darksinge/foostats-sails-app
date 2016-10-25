@@ -1,12 +1,53 @@
 
 <div class="page-wrap">
-   <div class="page-header">
-      <div class="container">
-         <h1>Admin Dashboard</h1>
-      </div>
-   </div>
-   <div class="container">
-      <p class="lead">Under construction.</p>
-   </div>
+    <div class="page-header">
+        <div class="container">
+            <h1>Admin Dashboard</h1>
+        </div>
+    </div>
+    <div class="container">
+      <div class="panel panel-default">
 
+         <div class="panel-heading">
+            <? if(locals.message) { ?>
+               <p class="lead text-warning"><?= message ?></p>
+            <? } ?>
+            <? if(locals.err) { ?>
+               <p class="lead text-danger">Error: <span class="text-danger"><?= err?></span></p>
+            <? }else{ var count = 1; ?>
+         </div>
+         <div class="panel-body">
+             <table class="table table-bordered table-inverse">
+                 <thead>
+                     <tr>
+                         <th>#</th>
+                         <th>First Name</th>
+                         <th>Last Name</th>
+                         <th>Email</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <? users.forEach(function(value) { ?>
+                     <tr>
+                         <th><?= count++ ?></th>
+                         <td><?= value.firstName ?></td>
+                         <td><?= value.lastName ?></td>
+                         <td><?= value.email ?></td>
+                         <form action="index.html" method="post">
+                             <td>
+                                 <button type="submit" class="btn btn-success">edit</button>
+                             </td>
+                         </form>
+                         <form onsubmit="return confirm('Delete user?');" action="/admin/player/delete?uuid={{= value.uuid }}" method="post">
+                             <td>
+                                 <button type="submit" class="btn btn-danger">delete</button>
+                             </td>
+                         </form>
+                     </tr>
+                     <? })} ?>
+                 </tbody>
+             </table>
+         </div>
+      </div>
+    </div>
 </div>
