@@ -10,6 +10,7 @@
                <h1>API Documentation</h1>
                <p class="lead">Click <a href="/docs">here</a> to read the docs.</p>
          </div>
+         {{ if (typeof user == 'undefined') { }}
          <div class="col-sm-4 col-md-4 col-lg-4">
             <div class="panel panel-default">
                <div class="panel-heading text-center">
@@ -25,6 +26,7 @@
                </div>
             </div>
          </div>
+         {{ } }}
       </div>
    </div>
 </div>

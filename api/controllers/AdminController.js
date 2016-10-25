@@ -8,7 +8,19 @@
 module.exports = {
 
   admin: function(req, res) {
-     res.view('admin')
+
+    if (req.isAuthenticated()) {
+
+        UserService.fetchPlayer(req, function(err, user) {
+            if (err) return serverError(err);
+            if (!user) return res.view('userViews/admin');
+            return res.view('userViews/admin', {
+                user: user
+            });
+        });
+    } else {
+        return res.forbidden('You are not permitted to perform this action.');
+    }
   },
 
   adminCreate: function(req, res, next) {

@@ -35,7 +35,7 @@ module.exports = {
         return passport.facebookCallback(req, res, function(err) {
             if (err) {
                 sails.log.error(err);
-                return res.redirect('/');
+                return res.redirect('/login');
             }
 
             sails.log.info('Facebook authentication successful!');

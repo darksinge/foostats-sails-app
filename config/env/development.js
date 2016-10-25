@@ -18,7 +18,7 @@ module.exports = {
    ***************************************************************************/
 
   models: {
-   //  connection: 'clearDbServer',
+    // connection: 'clearDbServer',
     connection: 'localDiskDb',
     migrate: 'alter'
   }

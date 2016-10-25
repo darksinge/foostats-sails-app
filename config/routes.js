@@ -36,12 +36,11 @@ module.exports.routes = {
 
    '/': 'RoutesController.index',
 
-   '/docs': {
-     view: 'docs',
-     locals: {
-       responses: responses,
-     }
+   '/login': {
+       view: 'login'
    },
+
+   '/docs': 'RoutesController.docs',
 
    //Login routes
    '/auth/facebook': 'AuthController.facebook',

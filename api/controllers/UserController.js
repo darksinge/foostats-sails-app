@@ -17,10 +17,10 @@ module.exports = {
               }
           }
       }
-
+      
       if (!uuid) {
           req.flash('error', 'There was an error, please try logging in again.')
-          return res.redirect('/');
+          return res.redirect('/login');
       }
 
       Player.findOne({uuid: uuid}).exec(function(err, player) {
@@ -28,7 +28,7 @@ module.exports = {
           if (!player) {
 
               req.flash('error', 'There was an error, please try logging in again.')
-              return res.redirect('/');
+              return res.redirect('/login');
           }
           return res.view('userViews/dashboard', {
               user: player
