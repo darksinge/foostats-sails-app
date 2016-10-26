@@ -26,6 +26,7 @@ module.exports = {
         req.logout();
         req.authenticated = false;
         res.clearCookie('access_token')
+        res.clearCookie('facebook_id')
         res.clearCookie('fooError')
         res.clearCookie('fooMessage')
         return res.redirect('/');
@@ -42,10 +43,9 @@ module.exports = {
                 return res.redirect('/login');
             }
 
-            sails.log.info('Facebook authentication successful!');
-
             req.logIn(req.user, function(err) {
                 if (err) return res.serverError(err);
+                sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
                 res.cookie('access_token', req.user.facebookToken);
                 res.cookie('facebook_id', req.user.facebookId);
                 return res.redirect('/dashboard');

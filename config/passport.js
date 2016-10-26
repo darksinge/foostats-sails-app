@@ -15,7 +15,7 @@ var verifyHandler = function(accessToken, refreshToken, profile, done) {
                   if (err) {
                      sails.log.error(err)
                   } else {
-                     sails.log.info('Updated user access token');
+                     sails.log.info('updated user access token');
                   }
                });
             }
@@ -26,9 +26,9 @@ var verifyHandler = function(accessToken, refreshToken, profile, done) {
 
             newUser.facebookId    = values.id;
             newUser.facebookToken = accessToken;
-            newUser.firstName     = values.firstName;
-            newUser.lastName      = values.lastName;
-            newUser.email         = values.email ? values.email : profile.emails[0].value || newUser.firstName + newUser.lastName + '@_no_primary_email.com'
+            newUser.firstName     = values.first_name ? values.first_name : profile.name.givenName;
+            newUser.lastName      = values.last_name ? values.last_name : profile.name.familyName;
+            newUser.email         = values.email ? values.email : profile.emails[0].value || (newUser.firstName + newUser.lastName + '@_no_primary_email.com')
 
             Player.create(newUser).exec(function(err, user) {
                if (err) return done(err);

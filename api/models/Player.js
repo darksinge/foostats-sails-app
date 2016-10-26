@@ -73,7 +73,7 @@ module.exports = {
             });
         } else {
             FacebookService.fetchFacebookUser(values.access_token, function(err, facebookUser) {
-                Player.findOne({email: facebookUser.email}).exec(function(err, player) {
+                Player.findOne({facebookId: facebookUser.facebookId}).exec(function(err, player) {
                     if (err) return done(err);
                     if (!player) return done(new Error('player not found.'));
                     return done(null, player);
