@@ -9,10 +9,10 @@ var _ = require('lodash');
 module.exports = {
 
    adminDashboard: function(req, res) {
-      if (req.method == 'POST') {
-         var error = req.param('error');
-         var message = req.param('message');
-      }
+
+      var error = req.headers.fooError
+      var message = req.param('message');
+
 
       var isAuthenticated = function(user)  {
          Player.find().exec(function(err, players) {
@@ -33,8 +33,8 @@ module.exports = {
                sails.log.error(err);
                return res.serverError(err);
             } else if (!user) {
-               var errorMessage = encodeURIComponent('user not found, please try logging in again.');
-               return res.redirect('/login?error=' + errorMessage);
+               res.set('fooError', 'user not found, please try logging in again.')
+               return res.redirect('/login');
             }
             return isAuthenticated(user);
          });
@@ -113,7 +113,7 @@ module.exports = {
    adminUpdate: function(req, res, next) {
       // uuid - the id of the player to be updated.
       if (!req.param('uuid')) return res.serverError('Could not find uuid parameter.')
-      
+
       var options = req.headers;
       if (!options.access_token) options.access_token = req.cookies.access_token;
       /**

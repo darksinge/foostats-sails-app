@@ -3,7 +3,7 @@
 module.exports = {
 
     fetchPlayer(req, done) {
-        var accessToken = req.headers.access_token || req.cookies.access_token;
+        var accessToken = req.cookies.access_token || req.headers.access_token;
 
         if (!accessToken) {
             return done(new Error('uuid is undefined.'));
