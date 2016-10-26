@@ -31,7 +31,7 @@ module.exports = {
 			if (err) return res.serverError(err);
 
 			// Check that a player with facebookUser.email does not already exist.
-			Player.findOne({email: facebookUser.email}).exec(function(err, player) {
+			Player.findOne({facebookId: facebookUser.id}).exec(function(err, player) {
 				if (err) return res.serverError(err);
 				if (player) {
 					return res.json({

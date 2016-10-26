@@ -7,7 +7,10 @@ module.exports = function(req, res, next) {
 
    FacebookService.resolveAccessTokenOwnerAsync(options)
    .then(function(user) {
-      if (user.role == 'admin') {
+      if (!user) {
+         res.cookie('fooMessage', 'session expired, please log back in.')
+         return res.redirect('/login');
+      } else if (user.role == 'admin') {
          return next();
       } else {
          return res.forbidden('You are not permitted to perform this action.');

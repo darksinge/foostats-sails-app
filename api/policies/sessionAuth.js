@@ -9,11 +9,6 @@
 */
 
 
-
-
-
-
-
 module.exports = function(req, res, next) {
 
    // User is allowed, proceed to the next policy,
@@ -51,7 +46,7 @@ module.exports = function(req, res, next) {
          }
       }
 
-      Player.findOne({email:user.email}).exec(function(err, player) {
+      Player.findOne({facebookId:user.facebookId}).exec(function(err, player) {
          if (err) return res.serverError(err);
 
          if (!player) return res.redirect('/signup');
