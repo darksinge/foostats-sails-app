@@ -50,6 +50,7 @@ module.exports.routes = {
    'post /admin/update/player': 'AdminController.adminUpdate',
    'post /admin/update': 'AdminController.adminUpdateView',
    'post /admin/create/player': 'AdminController.adminCreate',
+   'get /admin/create/player': 'AdminController.adminCreateView',
    'post /admin/delete/player': 'AdminController.adminDelete',
 
    // User routes

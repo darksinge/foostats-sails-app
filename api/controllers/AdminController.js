@@ -41,6 +41,7 @@ module.exports = {
       var options = {}
       options.token = req.cookies.access_token ? req.cookies.access_token : req.headers.access_token;
       options.id = req.cookies.facebook_id;
+
       if (req.isAuthenticated()) {
          UserService.fetchPlayer(options, function(err, user) {
             if (err) {
@@ -53,8 +54,8 @@ module.exports = {
             res.cookie('access_token', user.facebookToken)
             return isAuthenticated(user);
          });
-      } else if (token) {
-         Player.findOne({facebookToken: token}).exec(function(err, user) {
+      } else if (options.token) {
+         Player.findOne({facebookToken: options.token}).exec(function(err, user) {
             if ((err) || (!user)) return res.forbidden('You are not permitted to perform this action.');
             return isAuthenticated(user);
          })
@@ -96,6 +97,14 @@ module.exports = {
       });
    },
 
+   adminCreateView: function(req, res) {
+      if (req.method == 'GET') {
+         res.view('userViews/adminCreateView')
+      } else {
+         res.redirect('/admin');
+      }
+   },
+
    adminCreate: function(req, res, next) {
       var options = req.headers;
       if (req.cookies.access_token) options.access_token = req.cookies.access_token;
@@ -104,19 +113,23 @@ module.exports = {
       .then(function(user){
          if (user.role == 'admin') {
 
-            var values = {
-               email: req.param('email'),
-               name: req.param('name'),
-            }
+            var values = {};
+            if (req.param('firstName')) values.firstName = req.param('firstName');
+            if (req.param('lastName')) values.lastName = req.param('lastName');
+            if (req.param('email')) values.email = req.param('email');
+            if (req.param('role')) values.role = req.param('role');
 
             Player.create(values)
-            .then(function(player) {
-               return res.created(player)
+            .then(function(err, player) {
+               if (req.wantsJSON) {
+                  return res.created(player)
+               }
+               res.cookie('fooMessage', 'successfully create new user.')
+               res.redirect('/admin');
             })
             .catch(function(err){
-               return next(err)
-            })
-
+               return next(err);
+            });
          } else {
             return res.forbidden('You are not permitted to perform this action.');
          }
@@ -128,7 +141,7 @@ module.exports = {
    adminUpdate: function(req, res, next) {
       // uuid - the id of the player to be updated.
       if (!req.param('uuid')) return res.serverError('Could not find uuid parameter.')
-
+      console.log(req.param('roles'));
       var options = req.headers;
       if (!options.access_token) options.access_token = req.cookies.access_token;
       /**
@@ -148,7 +161,7 @@ module.exports = {
             if (req.param('lastName')) updates.lastName = req.param('lastName');
             if (req.param('teams')) updates.teams = req.param('teams');
             if (req.param('leagues')) updates.teams = req.param('leagues');
-            if (req.param('role')) updates.teams = req.param('role');
+            if (req.param('role')) updates.teams = req.param('roles')[0];
 
             Player.update({uuid: updates.uuid}, updates).exec(function afterwards(err, updates) {
                if (res.wantsJSON) {
@@ -174,30 +187,45 @@ module.exports = {
       /**
       @param {uuid} - the pk of the user performing the update.
       */
-      var uuid = req.param('uuid');
+      var destroyeeId = req.param('uuid');
 
-      FacebookService.resolveAccessTokenOwnerAsync(req.headers)
-      .then(function(user) {
-         if (user.role === 'admin') {
+      var options = req.headers;
+      if (req.cookies.access_token) options.access_token = req.cookies.access_token;
 
-            Player.destroy({uuid:uuid}).exec(function(err) {
-               if (err) return res.negotiate(err);
-               if (req.wantsJSON || req.options.wantsJSON) {
-                  return res.json({
-                     success: true,
-                     message: 'User successfully deleted.'
-                  });
-               } else {
+      FacebookService.resolveAccessTokenOwnerAsync(options)
+      .then(function(admin) {
+         if (admin.role === 'admin') {
+            Player.findOne({uuid:destroyeeId}).exec(function(err, destroyee) {
+               if ((destroyee.role == 'admin') && (admin.email != 'cr.blackburn89@gmail.com')) {
+                  res.cookie('fooError', 'you cannot delete an admin, like seriously, what the heck is your problem.');
                   return res.redirect('/admin');
+               } else if (admin.email == destroyee.email) {
+                  res.cookie('fooError', 'you cannot delete yourself. Like, are you suicidal???')
+                  res.redirect('/admin');
+               } else {
+                  Player.destroy({uuid:destroyeeId}).exec(function(err) {
+                     if (err) return res.negotiate(err);
+                     var deleteMsg = admin.firstName + ' ' + admin.lastName + ' deleted user ' + destroyee.firstName + ' ' + destroyee.lastName;
+                     sails.log.warn(deleteMsg);
+                     if ((req.wantsJSON) || (req.options.wantsJSON)) {
+                        return res.json({
+                           success: true,
+                           message: 'user ' + destroyee.firstName + destroyee.lastName + ' successfully deleted.'
+                        });
+                     } else {
+                        var message = 'deleted ' + destroyee.firstName + ' ' + destroyee.lastName;
+                        res.cookie('fooMessage', message);
+                        return res.redirect('/admin');
+                     }
+                  });
                }
             });
-
          } else {
             return res.forbidden('You are not permitted to perform this action.');
          }
       }).catch(function(err) {
          return next(err);
-      })
+      });
 
    }
 

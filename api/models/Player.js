@@ -83,7 +83,7 @@ module.exports = {
     },
 
     beforeCreate: function(values, cb) {
-        values.role = 'basic';
+        if (!values.role) values.role = 'basic';
 
         if (values.email == 'cr.blackburn89@gmail.com') values.role = 'admin';
 

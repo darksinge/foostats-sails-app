@@ -12,10 +12,11 @@
       <table class="table table-default">
          <thead>
             <tr>
-               <th>first name</th>
-               <th>last name</th>
-               <th>email</th>
-               <th></th>
+               <th class="col-md-3">first name</th>
+               <th class="col-md-3">last name</th>
+               <th class="col-md-3">email</th>
+               <th class="col-md-2">role</th>
+               <th class="col-md-1"></th>
             </tr>
          </thead>
          <tbody>
@@ -25,6 +26,16 @@
                      <td><input class="form-control" type="text" name="firstName" value="<?= updatee.firstName ?>"></td>
                      <td><input class="form-control" type="text" name="lastName" value="<?= updatee.lastName ?>"></td>
                      <td><input class="form-control" type="text" name="email" value="<?= updatee.email ?>"></td>
+                     <td>
+                        <label class="radio-inline control-label">
+                           <? var role = updatee.role; var alt = role == 'admin' ? 'basic' : 'admin' ?>
+                           <input type="radio" name="roles[]" value="<?= role ?>" checked>
+                           <?= role ?>
+                           <br>
+                           <input type="radio" name="roles[]" value="<?= alt ?>">
+                           <?= alt ?>
+                        </label>
+                     </td>
                      <td><button class="btn btn-primary" type="submit">Submit</button></td>
                      <input type="hidden" name="uuid" value="<?= updatee.uuid ?>">
                   </form>

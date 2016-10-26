@@ -1,0 +1,75 @@
+<div class="page-wrap">
+   <div class="container">
+      <div class="page-header">
+         <h1>Create New Player</h1>
+         <h1 id="test"></h1>
+      </div>
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <p id="panel-message" class="text-danger"></p>
+         </div>
+         <div class="panel-body">
+            <table class="table table-inverse">
+               <thead>
+                  <tr>
+                     <th id="fn">first name</th>
+                     <th id="ln">last name</th>
+                     <th id="em">email</th>
+                     <th>role</th>
+                     <th></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <form class="form-group" action="/admin/create/player" onsubmit="return validateFields()" method="post" name="form">
+                        <td><input class="form-control" type="text" name="firstName" value=""></td>
+                        <td><input class="form-control" type="text" name="lastName" value=""></td>
+                        <td><input class="form-control" type="text" name="email" value=""></td>
+                        <td>
+                           <label class="radio-inline control-label">
+                              <input type="radio" name="role" value="basic" checked>
+                              basic
+                              <br>
+                              <input type="radio" name="role" value="admin">
+                              admin
+                           </label>
+                        </td>
+                        <td><button type="submit" class="btn btn-success">Create</button></td>
+                     </form>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function validateFields() {
+      var canSubmit = true;
+      var field = document.forms["form"]["firstName"].value;
+      if (field == "" || null) {
+         document.getElementById("fn").innerHTML = "first name*"
+         document.getElementById("fn").className = "text-danger";
+         canSubmit = false;
+      }
+      field = document.forms["form"]["lastName"].value
+      if (field == "" || null) {
+         document.getElementById("ln").innerHTML = "last name*"
+         document.getElementById("ln").className = "text-danger";
+         canSubmit = false;
+      }
+
+      field = document.forms["form"]["email"].value
+      if (field == "" || null) {
+         document.getElementById("em").innerHTML = "email*"
+         document.getElementById("em").className = "text-danger";
+         canSubmit = false;
+      }
+
+      if (!canSubmit) document.getElementById("panel-message").innerHTML = 'You must fill out all fields*';
+
+      return canSubmit;
+
+
+   }
+</script>
