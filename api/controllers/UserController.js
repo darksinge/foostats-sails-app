@@ -19,16 +19,13 @@ module.exports = {
       FacebookService.verifyAccessTokenAsync(accessToken)
       .then(function(user) {
          if (req.isAuthenticated()) {
-            console.log('1');
             return res.view('userViews/dashboard', {
                user: req.user
             });
          } else {
-            console.log('2');
             req.logIn(user, function(err) {
                 if (err) return res.serverError(err);
                 res.cookie('access_token', user.facebookToken);
-                console.log(user);
                 return res.view('userViews/dashboard', {
                    user: user
                 });

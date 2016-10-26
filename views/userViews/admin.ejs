@@ -45,11 +45,12 @@
                                  <button type="submit" class="btn btn-success">edit</button>
                              </td>
                          </form>
-                         <form onsubmit="return confirm('Delete user?');" action="/admin/player/delete?uuid=<?= value.uuid ?>" method="post">
+                         <!-- <form onsubmit="deleteMessage()" action="/admin/player/delete?uuid=<?= value.uuid ?>" method="post"> -->
+                         <!-- <form> -->
                              <td>
-                                 <button type="submit" class="btn btn-danger">delete</button>
+                                 <button onclick="confirm('This doesn't do anything... yet.)" type="button" class="btn btn-danger">delete</button>
                              </td>
-                         </form>
+                         <!-- </form> -->
                      </tr>
                      <? }) ?>
                  </tbody>

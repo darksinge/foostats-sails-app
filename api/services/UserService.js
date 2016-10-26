@@ -2,16 +2,18 @@
 
 module.exports = {
 
-    fetchPlayer(req, done) {
-        var accessToken = req.cookies.access_token || req.headers.access_token;
+    fetchPlayer(options, done) {
 
-        if (!accessToken) {
-            return done(new Error('uuid is undefined.'));
-        }
-
-        Player.findOne({facebookToken: accessToken}).exec(function(err, player) {
+        Player.findOne({facebookToken: options.accessToken}).exec(function(err, player) {
             if (err) return done(err);
-            return done(null, player);
+            if (!player) {
+               Player.findOne({facebookId: options.id}).exec(function(err, player) {
+                  if (err) return done(err);
+                  return done(null, player);
+               });
+            } else {
+               return done(null, player);
+            }
         });
     }
 

@@ -24,6 +24,10 @@ module.exports = {
 
     facebookLogout: function(req, res) {
         req.logout();
+        req.authenticated = false;
+        res.clearCookie('access_token')
+        res.clearCookie('fooError')
+        res.clearCookie('fooMessage')
         return res.redirect('/');
     },
 
@@ -43,7 +47,7 @@ module.exports = {
             req.logIn(req.user, function(err) {
                 if (err) return res.serverError(err);
                 res.cookie('access_token', req.user.facebookToken);
-                res.set('access_token', req.user.facebookToken);
+                res.cookie('facebook_id', req.user.facebookId);
                 return res.redirect('/dashboard');
             });
         });

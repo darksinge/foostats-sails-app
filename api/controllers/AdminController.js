@@ -10,32 +10,47 @@ module.exports = {
 
    adminDashboard: function(req, res) {
 
-      var error = req.headers.fooError
-      var message = req.param('message');
+      var error;
+      if (req.param('fooError') || req.cookies.fooError) {
+         error = '';
+         error = req.param('fooError') || req.cookies.fooError;
+      }
+      var message;
+      if (req.param('fooMessage') || req.cookies.fooMessage) {
+         message = '';
+         message = req.param('message') || req.cookies.fooMessage;
+      }
 
+      res.clearCookie('fooError')
+      res.clearCookie('fooMessage')
 
       var isAuthenticated = function(user)  {
+
          Player.find().exec(function(err, players) {
-            return res.view('userViews/admin', {
-               user: user,
-               users: players,
-               error: error,
-               message: message
-            });
+
+            var data = {};
+            data.user = user;
+            data.users = players;
+            if (error) data.error = error;
+            if (message) data.message = message;
+
+            return res.view('userViews/admin', data);
          });
       }
 
-      var token = req.cookies.access_token;
-
+      var options = {}
+      options.token = req.cookies.access_token ? req.cookies.access_token : req.headers.access_token;
+      options.id = req.cookies.facebook_id;
       if (req.isAuthenticated()) {
-         UserService.fetchPlayer(req, function(err, user) {
+         UserService.fetchPlayer(options, function(err, user) {
             if (err) {
                sails.log.error(err);
                return res.serverError(err);
             } else if (!user) {
-               res.set('fooError', 'user not found, please try logging in again.')
+               res.cookie('fooError', 'user not found, please try logging in again.');
                return res.redirect('/login');
             }
+            res.cookie('access_token', user.facebookToken)
             return isAuthenticated(user);
          });
       } else if (token) {
