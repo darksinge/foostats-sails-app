@@ -36,9 +36,7 @@ module.exports.routes = {
 
    '/': 'RoutesController.index',
 
-   '/login': {
-       view: 'login'
-   },
+   '/login': 'RoutesController.login',
 
    '/docs': 'RoutesController.docs',
 
@@ -48,8 +46,9 @@ module.exports.routes = {
    '/logout': 'AuthController.facebookLogout',
 
    // Admin routes
-   '/admin': 'AdminController.admin',
-   'put /admin/update/player': 'AdminController.adminUpdate',
+   '/admin': 'AdminController.adminDashboard',
+   'post /admin/update/player': 'AdminController.adminUpdate',
+   'post /admin/update': 'AdminController.adminUpdateView',
    'post /admin/create/player': 'AdminController.adminCreate',
    'post /admin/delete/player': 'AdminController.adminDelete',
 

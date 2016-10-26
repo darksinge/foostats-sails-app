@@ -4,45 +4,43 @@
 
 */
 
-var bluebird = require('bluebird');
-var Promse =
-
-var findUser(accessToken, next) {
-   Player.findOne({facebookToken: accessToken}).exec(function(err, player) {
-      return (err, player)
-   });
-}
-
 module.exports = {
 
-  dashboard: function(req, res) {
+   dashboard: function(req, res) {
 
-      var uuid = undefined;
-      if (req.session) {
-          if (req.session.passport) {
-              if (req.session.passport.user) {
-                  uuid = req.session.passport.user;
-              }
-          }
+      var accessToken = req.headers.access_token || req.cookies.access_token;
+
+      if (!accessToken) {
+         return res.view('login', {
+            message: 'There was an error, please try logging in again.'
+         });
       }
 
-      if (!uuid) {
-          req.flash('error', 'There was an error, please try logging in again.')
-          return res.redirect('/login');
-      }
-
-      Player.findOne({uuid: uuid}).exec(function(err, player) {
-          if (err) return res.serverError(err);
-          if (!player) {
-
-              req.flash('error', 'There was an error, please try logging in again.')
-              return res.redirect('/login');
-          }
-          console.log('PLAYER', player);
-          return res.view('userViews/dashboard', {
-              user: player
-          });
+      FacebookService.verifyAccessTokenAsync(accessToken)
+      .then(function(user) {
+         if (req.isAuthenticated()) {
+            console.log('1');
+            return res.view('userViews/dashboard', {
+               user: req.user
+            });
+         } else {
+            console.log('2');
+            req.logIn(user, function(err) {
+                if (err) return res.serverError(err);
+                res.cookie('access_token', user.facebookToken);
+                console.log(user);
+                return res.view('userViews/dashboard', {
+                   user: user
+                });
+            });
+         }
+      }).catch(function(err) {
+         //TODO - change to res.redirect with params
+         return res.view('login', {
+            error: err,
+            message: 'Your session has expired, please try logging in again.'
+         });
       });
-  },
+   },
 
 }
