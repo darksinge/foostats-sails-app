@@ -7,38 +7,24 @@
 module.exports = {
 
    index: function(req, res) {
-      var token = req.cookies.access_token ? req.cookies.access_token : req.headers.access_token || '';
-      if (token) {
-         Player.findOne({facebookToken: token}).exec(function(err, player) {
-            if (err) return res.serverError(err);
-
-            var data = {};
-
-            if (!player)  {
-               data.error = 'user not found.'
-            } else {
-               data.user = player;
-            }
-
-            return res.view('homepage', data);
+      var user = req.user;
+      if (user) {
+         return res.view('homepage', {
+            user: user
          });
       } else {
-         res.view('homepage')
+         return res.view('homepage');
       }
    },
 
    docs: function(req, res) {
-      var responses = require('../../assets/responses')
-      var token = req.cookies.access_token ? req.cookies.access_token : req.headers.access_token || '';
-      if (token) {
-         // Used to set up navbar for authenticated users.
-         Player.findOne({facebookToken: token}).exec(function(err, player) {
-            if (err) return res.serverError(err);
-            var data = {};
-            data.responses = responses;
-            if (player) data.player = player
-            return res.view('docs', data);
-         });
+      var responses = require('../../assets/responses');
+      var user = req.user;
+      if (user) {
+            return res.view('docs', {
+               user: user,
+               responses: responses
+            });
       } else {
          res.view('docs', {responses: responses});
       }
@@ -46,6 +32,7 @@ module.exports = {
 
    login: function(req, res) {
       var data = {};
+
       if (req.cookies.fooError) data.error = req.cookies.fooError;
       if (req.cookies.fooMessage) data.message = req.cookies.fooMessage;
 
@@ -54,14 +41,6 @@ module.exports = {
 
       return res.view('login', data);
    },
-
-
-
-
-
-
-
-
 
 
 }

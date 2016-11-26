@@ -1,260 +1,251 @@
 <!-- View for API documentation-->
 
-<div class="page-wrap">
-   <div class="container">
-      <div class="page-header">
-         <div class="container">
-            <h1>API Documentation</h1>
-         </div>
+<!-- RESTful Routes -->
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--12-col">
+      <h3 class="">API Documentation</h3>
+   </div>
+</div>
+
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--12-col">
+      <h4>Admin Routes</h4>
+      <hr>
+      <p>User must be authenticated with admin priviledges to have access to these routes.</p>
+   </div>
+</div>
+<div class="mdl-grid">
+   <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+      <div class="mdl-card__title">
+         <h5>GET <code>/players</code></h5>
       </div>
-
-      <!-- REST API Routes Redesign -->
-
-
-
-      <!-- REST API Routes -->
-
-      <div class="page-container">
-         <div class="container bg-info">
-            <h2>RESTful Routes</h2>
-            <div class="panel panel-default">
-               <div class="panel-body">
-                  The following routes are available to authenticated users with basic or higher priviledges.
-               </div>
-            </div>
+      <div class="mdl-card__supporting-text">
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Headers</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="mdl-data-table__cell--non-numeric text-left"><code>access_token</code></td>
+                  <td><code>string</code></td>
+                  <td>A valid access token</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="container-route">
+            <pre><code class"language-html"><?= responses.playersGETRoute() ?></code></pre>
          </div>
-         <span role="separator" class="divider"><p></p></span>
-         <div class="panel panel-default">
-            <div class="panel-heading">
-               <span class="lead">GET <code>/players</code></span>
-            </div>
-            <div class="panel-body">
-               <table class="table table-bordered table-inverse">
-                  <thead>
-                     <tr>
-                        <th class="col-md-2">Headers</th>
-                        <th class="col-md-2">Type</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-4">Info</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <td><code>access_token</code></td>
-                        <td><code>string</code></td>
-                        <td>A valid access token</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                  </tbody>
-               </table>
-               <div class="container-route">
-                  <p class="text-primary">Response</p>
-                  <figure>
-                     <pre><code class"language-html"><?= responses.playersGETRoute() ?></code></pre>
-                  </figure>
-               </div>
-            </div>
-         </div>
-
-
-
-         <div class="panel panel-default">
-            <div class="panel-heading">
-               <span class="lead">GET <code>/teams</code></span>
-            </div>
-            <div class="panel-body">
-               <table class="table table-bordered table-inverse">
-                  <thead>
-                     <tr>
-                        <th class="col-md-2">Headers</th>
-                        <th class="col-md-2">Type</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-4">Info</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <td><code>access_token</code></td>
-                        <td><code>string</code></td>
-                        <td>A valid access token</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                  </tbody>
-               </table>
-               <div class="container-route">
-                  <p class="text-primary">Response</p>
-                  <figure>
-                     <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
-                  </figure>
-               </div>
-            </div>
-         </div>
-         <!-- END REST API Routes -->
-
-         <!-- Admin Routes -->
-         <!-- <div class="page-container"> -->
-
-         <div class="container bg-info">
-            <h2>Admin Routes</h2>
-            <div class="panel panel-default">
-               <div class="panel-body">
-                  User must be authenticated with admin priviledges to have access to these routes.
-               </div>
-            </div>
-         </div>
-         <span role="separator" class="divider"><p></p></span>
-         <div class="panel panel-default">
-            <div class="panel-heading">
-               <p class="lead">POST <code>/admin/create/player</code></p>
-            </div>
-            <div class="panel-body">
-               <table class="table table-bordered">
-                  <thead>
-                     <tr>
-                        <th class="col-md-2">Parameter</th>
-                        <th class="col-md-2">Type</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-4">Info</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <caption>Headers</caption>
-                     <tr>
-                        <td><code>access_token</code></td>
-                        <td><code>string</code></td>
-                        <td>A valid access token</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                  </tbody>
-               </table>
-               <table class="table table-bordered">
-                  <thead>
-                     <tr>
-                        <th class="col-md-2">Parameter</th>
-                        <th class="col-md-2">Type</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-4">Info</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <caption>Body</caption>
-                     <tr>
-                        <td><code>email</code></td>
-                        <td><code>string</code> <code>email</code></td>
-                        <td>The new user's email address</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                     <tr>
-                        <td><code>name</code></td>
-                        <td><code>string</code></td>
-                        <td>The new user's first and last name</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                  </tbody>
-               </table>
-            </div>
-
-         </div>
-         <div class="panel panel-default">
-            <div class="panel-heading">
-               <p class="lead">POST <code>/admin/update/player</code></p>
-            </div>
-            <div class="panel-body">
-               <table class="table table-bordered">
-                  <thead>
-                     <tr>
-                        <th class="col-md-2">Parameter</th>
-                        <th class="col-md-2">Type</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-4">Info</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <caption>Headers</caption>
-                     <tr>
-                        <td><code>access_token</code></td>
-                        <td><code>string</code></td>
-                        <td>A valid access token</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                  </tbody>
-               </table>
-               <table class="table table-bordered">
-                  <thead>
-                     <tr>
-                        <th class="col-md-2">Parameter</th>
-                        <th class="col-md-2">Type</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-4">Info</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <caption>Body</caption>
-                     <tr>
-                        <td><code>uuid</code></td>
-                        <td><code>string</code> <code>uuid</code></td>
-                        <td>The <code>uuid</code> of the player being updated</td>
-                        <td><span class="text-danger">*Required</span></td>
-                     </tr>
-                     <tr>
-                        <td><code>email</code></td>
-                        <td><code>string</code> <code>email</code></td>
-                        <td>The updated email address</td>
-                        <td>The only reason this should be updated <span class="text-danger">is if the user changes their primary email address on Facebook</span>, as this will cause authentication issues on the server.</td>
-                     </tr>
-                     <tr>
-                        <td><code>name</code></td>
-                        <td><code>string</code></td>
-                        <td>The updated name</td>
-                        <td><span class="text-info">Typically only done to change the users display name</span></td>
-                     </tr>
-                     <tr>
-                        <td><code>role</code></td>
-                        <td><code>string</code> <code>enum</code></td>
-                        <td>The users new role</td>
-                        <td>Possible values: <code>admin</code>, <code>basic</code>, <code>guest</code></td>
-                     </tr>
-                     <tr>
-                        <td><code>teams</code></td>
-                        <td><code>[uuid]</code></td>
-                        <td>A <code>JSON</code> array of team <code>uuid</code>'s</td>
-                        <td><span class="text-danger">Currently unavailable</span></td>
-                     </tr>
-                     <tr>
-                        <td><code>leagues</code></td>
-                        <td><code>[uuid]</code></td>
-                        <td>A <code>JSON</code> array of league <code>uuid</code>'s</td>
-                        <td><span class="text-danger">Currently unavailable</span></td>
-                     </tr>
-                  </tbody>
-               </table>
-            </div>
-         </div>
-
-         <div class="container">
-            <div class="container">
-               <div class="row">
-                  <div class="col-md-12">
-
-                  </div>
-                  <div class="col-md-12">
-
-                  </div>
-               </div>
-            </div>
-            <div class="container">
-               <div class="row">
-
-                  <div class="col-md-12">
-
-                  </div>
-                  <div class="col-md-12">
-
-                  </div>
-               </div>
-            </div>
-         </div>
-         <!-- </div> -->
-         <!-- END Admin Routes -->
       </div>
    </div>
+   <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+      <div class="mdl-card__title">
+         <h5>GET <code>/teams</code></h5>
+      </div>
+      <div class="mdl-card__supporting-text">
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Headers</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="mdl-data-table__cell--non-numeric text-left"><code>access_token</code></td>
+                  <td><code>string</code></td>
+                  <td>A valid access token</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="container-route">
+            <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Admin Routes -->
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--12-col">
+      <h4 class="">Admin Routes</h4>
+      <hr>
+      <p>User must be authenticated with admin priviledges to have access to these routes.</p>
+   </div>
+</div>
+<div class="mdl-grid">
+   <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+      <div class="mdl-card__title">
+         <h5>POST <code>/admin/create/player</code></h5>
+      </div>
+      <div class="mdl-card__supporting-text">
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Parameter</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="mdl-data-table__cell--non-numeric text-left"><code>access_token</code></td>
+                  <td><code>string</code></td>
+                  <td>A valid access token</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+            </tbody>
+         </table>
+
+         <div class="container-route">
+            <pre><code class"language-html"><?= responses.playersGETRoute() ?></code></pre>
+         </div>
+      </div>
+   </div>
+   <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+      <div class="mdl-card__title">
+         <h5>GET <code>/teams</code></h5>
+      </div>
+      <div class="mdl-card__supporting-text">
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Headers</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="mdl-data-table__cell--non-numeric text-left"><code>access_token</code></td>
+                  <td><code>string</code></td>
+                  <td>A valid access token</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="container-route">
+            <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
+         </div>
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th>Parameter</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <caption>Body</caption>
+               <tr>
+                  <td><code>email</code></td>
+                  <td><code>string</code> <code>email</code></td>
+                  <td>The new user's email address</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+               <tr>
+                  <td><code>name</code></td>
+                  <td><code>string</code></td>
+                  <td>The new user's first and last name</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+
+
+
+
+
+
+   <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+      <div class="mdl-card__title">
+         <p>POST <code>/admin/update/player</code></p>
+      </div>
+      <div class="mdl-card__supporting-text">
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Headers</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="mdl-data-table__cell--non-numeric text-left"><code>access_token</code></td>
+                  <td><code>string</code></td>
+                  <td>A valid access token</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="container-route">
+            <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
+         </div>
+         <table class="mdl-data-table">
+            <thead>
+               <tr>
+                  <th>Parameter</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Info</th>
+               </tr>
+            </thead>
+            <tbody>
+               <caption>Body</caption>
+               <tr>
+                  <td class="mdl-data-table__cell--non-numeric text-left"><code>uuid</code></td>
+                  <td><code>string</code> <code>uuid</code></td>
+                  <td>The <code>uuid</code> of the player being updated</td>
+                  <td><span class="text-danger">*Required</span></td>
+               </tr>
+               <tr>
+                  <td><code>email</code></td>
+                  <td><code>string</code> <code>email</code></td>
+                  <td>The updated email address</td>
+                  <td><span class="text-danger">Only change for development.</span></td>
+               </tr>
+               <tr>
+                  <td><code>name</code></td>
+                  <td><code>string</code></td>
+                  <td>The updated name</td>
+                  <td><span class="text-info">For changing users display name.</span></td>
+               </tr>
+               <tr>
+                  <td><code>role</code></td>
+                  <td><code>string</code> <code>enum</code></td>
+                  <td>The users new role</td>
+                  <td>Possible values: <code>admin</code>, <code>basic</code>, <code>guest</code></td>
+               </tr>
+               <tr>
+                  <td><code>teams</code></td>
+                  <td><code>[uuid]</code></td>
+                  <td>A <code>JSON</code> array of team <code>uuid</code>'s</td>
+                  <td><span class="text-danger">Currently unavailable</span></td>
+               </tr>
+               <tr>
+                  <td><code>leagues</code></td>
+                  <td><code>[uuid]</code></td>
+                  <td>A <code>JSON</code> array of league <code>uuid</code>'s</td>
+                  <td><span class="text-danger">Currently unavailable</span></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<!-- END Admin Routes -->

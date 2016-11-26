@@ -5,7 +5,6 @@ var Promise = require('bluebird');
 // api/services/FacebookService.js
 module.exports = {
 
-
    /**
    * @param - options: an object that must contain the uuid of the user being
    *   updated (the updatee), AND the access_token of the user performing the update.
@@ -41,7 +40,7 @@ module.exports = {
    },
 
    // returns 'done(error, flag)', where flag is a boolean value indicating if the accessToken is valid or not.
-   verifyAccessTokenAsync: function(accessToken) {
+   verifyAccessToken: function(accessToken) {
       return new Promise(function(resolve, reject) {
          if (!accessToken) return reject(new Error('Access token not provided!'));
          FacebookService.fetchFacebookUser({access_token: accessToken}, function(err, facebookUser) {
@@ -95,10 +94,5 @@ module.exports = {
          return done(null, facebookUser);
       });
    },
-
-   checkLoginState: function() {
-
-   }
-
 
 };

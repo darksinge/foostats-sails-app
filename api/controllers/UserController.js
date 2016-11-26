@@ -8,36 +8,21 @@ module.exports = {
 
    dashboard: function(req, res) {
 
-      var accessToken = req.headers.access_token || req.cookies.access_token;
-
-      if (!accessToken) {
-         return res.view('login', {
-            message: 'There was an error, please try logging in again.'
-         });
-      }
-
-      FacebookService.verifyAccessTokenAsync(accessToken)
-      .then(function(user) {
-         if (req.isAuthenticated()) {
+      if (req.user) {
+         Player.findOne({facebookId: req.user.facebookId}).exec(function(err, user) {
+            if (err) return res.serverError(err);
+            if (!user) return res.redirect('/login');
             return res.view('userViews/dashboard', {
-               user: req.user
+               user: user
             });
-         } else {
-            req.logIn(user, function(err) {
-                if (err) return res.serverError(err);
-                res.cookie('access_token', user.facebookToken);
-                return res.view('userViews/dashboard', {
-                   user: user
-                });
-            });
-         }
-      }).catch(function(err) {
+         })
+      } else {
          //TODO - change to res.redirect with params
          return res.view('login', {
             error: err,
-            message: 'Your session has expired, please try logging in again.'
+            message: 'Your session has expired, please log in again.'
          });
-      });
+      }
    },
 
 }

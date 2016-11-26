@@ -24,23 +24,24 @@ var responses = require('../assets/responses');
 
 module.exports.routes = {
 
-    /***************************************************************************
-    *                                                                          *
-    * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
-    * etc. depending on your default view engine) your home page.              *
-    *                                                                          *
-    * (Alternatively, remove this and add an `index.html` file in your         *
-    * `assets` directory)                                                      *
-    *                                                                          *
-    ***************************************************************************/
+   /***************************************************************************
+   *                                                                          *
+   * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
+   * etc. depending on your default view engine) your home page.              *
+   *                                                                          *
+   * (Alternatively, remove this and add an `index.html` file in your         *
+   * `assets` directory)                                                      *
+   *                                                                          *
+   ***************************************************************************/
 
    '/': 'RoutesController.index',
 
-   '/login': 'RoutesController.login',
+   'get /login': 'RoutesController.login',
 
    '/docs': 'RoutesController.docs',
 
-   //Login routes
+   //Login and auth routes
+   '/verify': 'AuthController.verifyUserAuth',
    '/auth/facebook': 'AuthController.facebook',
    '/auth/facebook/callback': 'AuthController.facebookCallback',
    '/logout': 'AuthController.facebookLogout',
@@ -59,14 +60,14 @@ module.exports.routes = {
    // REST API Routes
    'put /players': 'PlayerController.update',
 
-    /***************************************************************************
-    *                                                                          *
-    * Custom routes here...                                                    *
-    *                                                                          *
-    * If a request to a URL doesn't match any of the custom routes above, it   *
-    * is matched against Sails route blueprints. See `config/blueprints.js`    *
-    * for configuration options and examples.                                  *
-    *                                                                          *
-    ***************************************************************************/
+   /***************************************************************************
+   *                                                                          *
+   * Custom routes here...                                                    *
+   *                                                                          *
+   * If a request to a URL doesn't match any of the custom routes above, it   *
+   * is matched against Sails route blueprints. See `config/blueprints.js`    *
+   * for configuration options and examples.                                  *
+   *                                                                          *
+   ***************************************************************************/
 
 };

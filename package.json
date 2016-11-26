@@ -23,6 +23,7 @@
     "grunt-sync": "0.5.2",
     "include-all": "~0.1.6",
     "lodash": "^4.16.4",
+    "material-design-icons": "^3.0.1",
     "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",

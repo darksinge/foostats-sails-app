@@ -1,70 +1,92 @@
 
-<div class="page-wrap">
-   <div class="page-header">
-      <div class="container">
-         <h1>Admin Dashboard</h1>
+<style media="screen">
+   h1,h2,h3,h4,h5,h6 {
+      text-align: center;
+   }
+   .text-success {
+      color: #228b22;
+   }
+   .mdl-button-success {
+      background-color: #228b22;
+      color: white;
+   }
+   .mdl-button-alert {
+      background-color: #cd0000;
+      color: white;
+   }
+</style>
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--12-col">
+      <h3>Admin Dashboard</h3>
+   </div>
+</div>
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
+      <div class="mdl-card__title">
+         MESSAGES
+      </div>
+      <div class="mdl-card__supporting-text">
+         <? if(typeof message != 'undefined') { ?>
+         <p class="lead">Message: <span class="text-info"><?= message ?></span></p>
+         <? }else{ ?>
+         <p class="lead text-info">no messages</p>
+         <? } ?>
       </div>
    </div>
-   <div class="container">
-      <div class="pull-right">
-         <form class="" action="/admin/create/player" method="get">
-            <button type="submit" name="createPlayer" class="btn btn-lg btn-success">+ Create User</button>
-         </form>
+   <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
+      <div class="mdl-card__title">
+         ERRORS
+      </div>
+      <div class="mdl-card__supporting-text">
+         <? if(typeof error != 'undefined') { ?>
+         <p class="lead">Error: <span class="text-danger"><?= error ?></span></p>
+         <? }else{ ?>
+         <p class="lead text-success">no errors</p>
+         <? } ?>
+         <? var count = 1; ?>
       </div>
    </div>
-   <span class="divider" role="separator"><br></span>
-   <div class="container">
-      <div class="panel panel-default">
-         <div class="panel-heading">
-            <? if(typeof message != 'undefined') { ?>
-               <p class="lead">Message: <span class="text-info"><?= message ?></span></p>
-               <? }else{ ?>
-                  <p class="lead text-info">no messages</p>
-                  <? } ?>
-                  <? if(typeof error != 'undefined') { ?>
-                     <p class="lead">Error: <span class="text-danger"><?= error ?></span></p>
-                     <? }else{ ?>
-                        <p class="lead text-success">no errors</p>
-                        <? } ?>
-                        <? var count = 1; ?>
-                     </div>
-                     <div class="panel-body">
-                        <table class="table table-bordered table-inverse">
-                           <thead>
-                              <tr>
-                                 <th>#</th>
-                                 <th>First Name</th>
-                                 <th>Last Name</th>
-                                 <th>Email</th>
-                                 <th>Role</th>
-                                 <th></th>
-                                 <th></th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              <? users.forEach(function(value) { ?>
-                                 <tr>
-                                    <th><?= count++ ?></th>
-                                    <td><?= value.firstName ?></td>
-                                    <td><?= value.lastName ?></td>
-                                    <td><?= value.email ?></td>
-                                    <td><?= value.role ?></td>
-                                    <form action="/admin/update?uuid=<?= value.uuid ?>" method="post">
-                                       <td>
-                                          <button type="submit" class="btn btn-success">edit</button>
-                                       </td>
-                                    </form>
-                                    <form onsubmit="return confirm('Delete user?')" action="/admin/delete/player" method="post">
-                                       <td>
-                                          <button type="submit" class="btn btn-danger">delete</button>
-                                       </td>
-                                       <input type="hidden" name="uuid" value="<?= value.uuid ?>">
-                                    </form>
-                                 </tr>
-                                 <? }) ?>
-                              </tbody>
-                           </table>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+</div>
+
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--10-col">
+      <table class="mdl-data-table">
+         <thead>
+            <tr>
+               <th>#</th>
+               <th class="mdl-data-table__cell--non-numeric">First Name</th>
+               <th class="mdl-data-table__cell--non-numeric">Last Name</th>
+               <th class="mdl-data-table__cell--non-numeric">Email</th>
+               <th class="mdl-data-table__cell--non-numeric">Role</th>
+               <th></th>
+               <th></th>
+            </tr>
+         </thead>
+         <tbody>
+            <? users.forEach(function(value) { ?>
+               <tr>
+                  <th><?= count++ ?></th>
+                  <td class="mdl-data-table__cell--non-numeric"><?= value.firstName ?></td>
+                  <td class="mdl-data-table__cell--non-numeric"><?= value.lastName ?></td>
+                  <td class="mdl-data-table__cell--non-numeric"><?= value.email ?></td>
+                  <td class="mdl-data-table__cell--non-numeric"><?= value.role ?></td>
+                  <form action="/admin/update?uuid=<?= value.uuid ?>" method="post">
+                     <td>
+                        <button type="submit" class="mdl-button mdl-button--raised mdl-button-success">edit</button>
+                     </td>
+                  </form>
+                  <form onsubmit="return confirm('Delete user?')" action="/admin/delete/player" method="post">
+                     <td>
+                        <button type="submit" class="mdl-button mdl-button-raised mdl-button-alert">delete</button>
+                     </td>
+                     <input type="hidden" name="uuid" value="<?= value.uuid ?>">
+                  </form>
+               </tr>
+               <? }) ?>
+            </tbody>
+      </table>
+   </div>
+   <div class="mdl-cell mdl-cell--2-col">
+
+   </div>
+</div>

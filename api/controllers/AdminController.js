@@ -140,47 +140,39 @@ module.exports = {
 
    adminUpdate: function(req, res, next) {
       // uuid - the id of the player to be updated.
-      if (!req.param('uuid')) return res.serverError('Could not find uuid parameter.')
-      console.log(req.param('role'));
-      var options = req.headers;
-      if (!options.access_token) options.access_token = req.cookies.access_token;
-      /**
-      * @description :: resolveAccessTokenOwnerAsync - resolves the identify of the user performing the update.
-      */
-      FacebookService.resolveAccessTokenOwnerAsync(options)
-      .then(function(user){
+      if (!req.param('uuid')) return res.serverError('uuid parameter was not provided.')
 
-         if (!user) return res.serverError('Could not find user.')
+      if (req.user) {
+         Player.findOne({facebookId: req.user.facebookId}).exec(function(err, user) {
+            if (err) return res.serverError(err);
+            if (!user) return res.redirect('/login');
+            if (user.role == 'admin') {
+               var updates = {};
 
-         if (user.role === 'admin') {
+               if (req.param('email')) updates.email = req.param('email');
+               if (req.param('firstName')) updates.firstName = req.param('firstName');
+               if (req.param('lastName')) updates.lastName = req.param('lastName');
+               if (req.param('teams')) updates.teams = req.param('teams');
+               if (req.param('leagues')) updates.leagues = req.param('leagues');
+               if (req.param('role')) updates.role = req.param('role');
 
-            var updates = {};
-            updates.uuid = req.param('uuid');
-            if (req.param('email')) updates.email = req.param('email');
-            if (req.param('firstName')) updates.firstName = req.param('firstName');
-            if (req.param('lastName')) updates.lastName = req.param('lastName');
-            if (req.param('teams')) updates.teams = req.param('teams');
-            if (req.param('leagues')) updates.leagues = req.param('leagues');
-            if (req.param('role')) updates.role = req.param('role');
-
-            Player.update({uuid: updates.uuid}, updates).exec(function afterwards(err, updates) {
-               if (res.wantsJSON) {
-                  return res.json({
-                     success: true,
-                     updates: updates,
-                     error: err
-                  });
-               } else {
-                  res.redirect('/admin');
-               }
-            });
-
-         } else {
-            return res.forbidden('You are not permitted to perform this action.');
-         }
-      }).catch(function(error) {
-         return next(error);
-      })
+               updates.uuid = req.param('uuid');
+               Player.update({uuid: updates.uuid}, updates).exec(function afterwards(err, updates) {
+                  if (res.wantsJSON) {
+                     return res.json({
+                        success: true,
+                        updates: updates,
+                        error: err
+                     });
+                  } else {
+                     res.redirect('/admin');
+                  }
+               });
+            } else {
+               res.forbidden('You must be an admin to perform this action.');
+            }
+         });
+      }
    },
 
    adminDelete: function(req, res, next) {

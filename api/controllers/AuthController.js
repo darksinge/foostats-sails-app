@@ -22,35 +22,90 @@ var passport = sails.config.passport;
 
 module.exports = {
 
-    facebookLogout: function(req, res) {
-        req.logout();
-        req.authenticated = false;
-        res.clearCookie('access_token')
-        res.clearCookie('facebook_id')
-        res.clearCookie('fooError')
-        res.clearCookie('fooMessage')
-        return res.redirect('/');
-    },
+   facebookLogout: function(req, res) {
+      req.logout();
+      req.authenticated = false;
+      res.clearCookie('access_token')
+      res.clearCookie('facebook_id')
+      res.clearCookie('fooError')
+      res.clearCookie('fooMessage')
+      return res.redirect('/');
+   },
 
-    facebook: function(req, res) {
-        return passport.facebookAuth(req, res);
-    },
+   facebook: function(req, res) {
+      return passport.facebookAuth(req, res);
+   },
 
-    facebookCallback: function(req, res) {
-        return passport.facebookCallback(req, res, function(err) {
+   facebookCallback: function(req, res) {
+      return passport.facebookCallback(req, res, function(err) {
+         if (err) {
+            sails.log.error(err);
+            if (req.wantsJSON) {
+               return res.json({
+                  success: false,
+                  error: err
+               });
+            } else {
+               return res.redirect('/login');
+            }
+         }
+
+         req.logIn(req.user, function(err) {
             if (err) {
-                sails.log.error(err);
-                return res.redirect('/login');
+               if (req.wantsJSON)
+                  return res.serverError(err);
+               else
+                  return res.json({
+                     success: false,
+                     error: err
+                  });
             }
 
-            req.logIn(req.user, function(err) {
-                if (err) return res.serverError(err);
-                sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
-                res.cookie('access_token', req.user.facebookToken);
-                res.cookie('facebook_id', req.user.facebookId);
-                return res.redirect('/dashboard');
-            });
-        });
-    },
+            sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
+
+            res.cookie('access_token', req.user.facebookToken);
+            res.cookie('facebook_id', req.user.facebookId);
+
+            if (req.wantsJSON) {
+               return res.json({
+                  success: true,
+                  user_info: {
+                     name: req.user.firstName + ' ' + req.user.lastName,
+                     access_token: req.user.facebookToken,
+                     facebook_id: req.user.facebookId
+                  }
+               });
+            } else {
+               return res.redirect('/dashboard');
+            }
+         });
+      });
+   },
+
+   verifyUserAuth: function(req, res) {
+      FacebookService.verifyAccessToken(req.param["access_token"])
+      .then(function(player) {
+         return res.json({
+            success: true,
+            player: {
+               uuid: player.uuid,
+               email: player.email,
+               firstName: player.firstName,
+               lastName: player.lastName,
+               teams: player.teams,
+               achievements: player.achievements,
+               role: player.role,
+               facebookId: player.facebookId,
+               facebookToken: player.facebookToken,
+            }
+         });
+      })
+      .catch(function(err) {
+         return res.json({
+            success: false,
+            error: err
+         });
+      });
+   },
 
 };
