@@ -10,59 +10,35 @@ module.exports = {
 
    adminDashboard: function(req, res) {
 
-      var error;
+      var fError;
       if (req.param('fooError') || req.cookies.fooError) {
-         error = '';
-         error = req.param('fooError') || req.cookies.fooError;
+         fError = '';
+         fError = req.param('fooError') || req.cookies.fooError;
+         res.clearCookie('fooError')
       }
-      var message;
+      var fMessage;
       if (req.param('fooMessage') || req.cookies.fooMessage) {
-         message = '';
-         message = req.param('message') || req.cookies.fooMessage;
+         fMessage = '';
+         fMessage = req.param('message') || req.cookies.fooMessage;
+         res.clearCookie('fooMessage')
       }
 
-      res.clearCookie('fooError')
-      res.clearCookie('fooMessage')
-
-      var isAuthenticated = function(user)  {
-
+      if (req.user) {
          Player.find().exec(function(err, players) {
-
-            var data = {};
-            data.user = user;
-            data.users = players;
-            if (error) data.error = error;
-            if (message) data.message = message;
-
-            return res.view('userViews/admin', data);
-         });
-      }
-
-      var options = {}
-      options.token = req.cookies.access_token ? req.cookies.access_token : req.headers.access_token;
-      options.id = req.cookies.facebook_id;
-
-      if (req.isAuthenticated()) {
-         UserService.fetchPlayer(options, function(err, user) {
             if (err) {
-               sails.log.error(err);
                return res.serverError(err);
-            } else if (!user) {
-               res.cookie('fooError', 'user not found, please try logging in again.');
-               return res.redirect('/login');
-            }
-            res.cookie('access_token', user.facebookToken)
-            return isAuthenticated(user);
-         });
-      } else if (options.token) {
-         Player.findOne({facebookToken: options.token}).exec(function(err, user) {
-            if ((err) || (!user)) return res.forbidden('You are not permitted to perform this action.');
-            return isAuthenticated(user);
-         })
-      } else {
-         return res.forbidden('You are not permitted to perform this action.');
-      }
+            } else {
+               var data = {};
 
+               data.user = req.user;
+               data.players = players;
+               if (fError) data.error = fError;
+               if (fMessage) data.message = fMessage;
+
+               return res.view('userViews/admin', data);
+            }
+         });
+      }
    },
 
    adminUpdateView: function(req, res) {
@@ -99,85 +75,88 @@ module.exports = {
 
    adminCreateView: function(req, res) {
       if (req.method == 'GET') {
-         res.view('userViews/adminCreateView')
+         return res.view('userViews/adminCreateView')
       } else {
-         res.redirect('/admin');
+         return res.redirect('/admin');
       }
    },
 
    adminCreate: function(req, res, next) {
-      var options = req.headers;
-      if (req.cookies.access_token) options.access_token = req.cookies.access_token;
 
-      FacebookService.resolveAccessTokenOwnerAsync(options)
-      .then(function(user){
-         if (user.role == 'admin') {
+      if (!req.user){
+         res.cookie('fooError', 'You have been logged out.');
+         return res.redirect('/');
+      }
 
-            var values = {};
-            if (req.param('firstName')) values.firstName = req.param('firstName');
-            if (req.param('lastName')) values.lastName = req.param('lastName');
-            if (req.param('email')) values.email = req.param('email');
-            if (req.param('role')) values.role = req.param('role');
+      var role = req.user.role ? req.user.role : '';
+      if (role == 'admin') {
+         var values = {};
+         if (req.param('firstName')) values.firstName = req.param('firstName');
+         if (req.param('lastName')) values.lastName = req.param('lastName');
+         if (req.param('email')) values.email = req.param('email');
+         if (req.param('role')) values.role = req.param('role');
 
-            Player.create(values)
-            .then(function(err, player) {
-               if (req.wantsJSON) {
-                  return res.created(player)
-               }
-               res.cookie('fooMessage', 'successfully create new user.')
-               res.redirect('/admin');
-            })
-            .catch(function(err){
-               return next(err);
-            });
-         } else {
-            return res.forbidden('You are not permitted to perform this action.');
-         }
-      }).catch(function(error) {
-         return next(error);
-      })
+         Player.create(values).exec(function(err, player) {
+            if (err) res.serverError(err);
+            if (req.wantsJSON) {
+               return res.json({
+                  success: true,
+                  player: player
+               })
+            } else {
+               res.cookie('fooMessage', 'successfully create new player.')
+               return res.redirect('/admin');
+            }
+         });
+      } else {
+         return res.forbidden('You are not permitted to perform this action.');
+      }
    },
 
    adminUpdate: function(req, res, next) {
+
+      if (!req.user) {
+         return res.redirect('/', {
+            error: 'You are not logged in.'
+         });
+      }
+
       // uuid - the id of the player to be updated.
-      if (!req.param('uuid')) return res.serverError('uuid parameter was not provided.')
+      if (!req.param('uuid')) {
+         res.cookie('fooError', 'Player could not be updated - uuid was not provided.')
+         return res.redirect('/admin');
+      }
 
-      if (req.user) {
-         Player.findOne({facebookId: req.user.facebookId}).exec(function(err, user) {
-            if (err) return res.serverError(err);
-            if (!user) return res.redirect('/login');
-            if (user.role == 'admin') {
-               var updates = {};
+      var role = req.user.role ? req.user.role : '';
+      if (role == 'admin') {
+         var updates = {};
 
-               if (req.param('email')) updates.email = req.param('email');
-               if (req.param('firstName')) updates.firstName = req.param('firstName');
-               if (req.param('lastName')) updates.lastName = req.param('lastName');
-               if (req.param('teams')) updates.teams = req.param('teams');
-               if (req.param('leagues')) updates.leagues = req.param('leagues');
-               if (req.param('role')) updates.role = req.param('role');
+         if (req.param('email')) updates.email = req.param('email');
+         if (req.param('firstName')) updates.firstName = req.param('firstName');
+         if (req.param('lastName')) updates.lastName = req.param('lastName');
+         if (req.param('teams')) updates.teams = req.param('teams');
+         if (req.param('leagues')) updates.leagues = req.param('leagues');
+         if (req.param('role')) updates.role = req.param('role');
 
-               updates.uuid = req.param('uuid');
-               Player.update({uuid: updates.uuid}, updates).exec(function afterwards(err, updates) {
-                  if (res.wantsJSON) {
-                     return res.json({
-                        success: true,
-                        updates: updates,
-                        error: err
-                     });
-                  } else {
-                     res.redirect('/admin');
-                  }
+         Player.update({uuid: req.param('uuid')}, updates).exec(function afterwards(err, updates) {
+            if (res.wantsJSON) {
+               return res.json({
+                  success: true,
+                  updates: updates,
+                  error: err
                });
             } else {
-               res.forbidden('You must be an admin to perform this action.');
+               res.redirect('/admin');
             }
          });
+      } else {
+         res.forbidden('You must be an admin to perform this action.');
       }
    },
 
    adminDelete: function(req, res, next) {
       /**
-      @param {uuid} - the pk of the user performing the update.
+      @param {uuid} - the pk of the user performing the deletion.
       */
       var destroyeeId = req.param('uuid');
 
