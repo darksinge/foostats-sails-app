@@ -27,9 +27,9 @@
       </div>
       <div class="mdl-card__supporting-text">
          <? if(typeof message != 'undefined') { ?>
-         <p class="lead">Message: <span class="text-info"><?= message ?></span></p>
+         <p class="text-info"><?- message ?></p>
          <? }else{ ?>
-         <p class="lead text-info">No messages</p>
+         <p class="text-info">No messages</p>
          <? } ?>
       </div>
    </div>
@@ -39,9 +39,9 @@
       </div>
       <div class="mdl-card__supporting-text">
          <? if(typeof error != 'undefined') { ?>
-         <p class="lead">Error: <span class="text-danger"><?= error ?></span></p>
+         <p>Error: <span class="text-danger"><?- error ?></span></p>
          <? }else{ ?>
-         <p class="lead text-success">No errors</p>
+         <p class="text-success">No errors</p>
          <? } ?>
          <? var count = 1; ?>
       </div>
@@ -66,6 +66,10 @@
             </tr>
          </thead>
          <tbody>
+            <? var groups = _.groupBy(players, 'role'); ?>
+            <? var admins = _.sortBy(groups.admin, 'lastName'); ?>
+            <? var others = _.sortBy(groups.basic, 'lastName'); ?>
+            <? players = admins; _.forEach(others, function(o) {players.push(o)}) ?>
             <? players.forEach(function(player) { ?>
                <tr>
                   <th><?= count++ ?></th>

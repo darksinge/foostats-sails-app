@@ -22,7 +22,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "~0.1.6",
-    "lodash": "^4.16.4",
+    "lodash": "^4.17.2",
     "material-design-icons": "^3.0.1",
     "node-uuid": "^1.4.7",
     "passport": "^0.3.2",

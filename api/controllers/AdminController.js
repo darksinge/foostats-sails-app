@@ -146,6 +146,22 @@ module.exports = {
                   error: err
                });
             } else {
+
+               var updatedPlayers = '';
+               if (Array.isArray(updates)) {
+                  if (updates.length == 1) {
+                     updatedPlayers = updates[0].firstName + ' ' + updates[0].lastName;
+                  } else {
+                     updatedPlayers = '<br>';
+                     for (var i = 0; i < updates.length; i++) {
+                        updatedPlayers += '&emsp;' + updates[i].firstName + ' ' + updates[i].lastName;
+                        if (i != updates.length - 1) updatedPlayers += '<br>';
+                     }
+                  }
+
+               }
+
+               res.cookie('fooMessage', 'Successfully updated player: ' + updatedPlayers)
                res.redirect('/admin');
             }
          });
@@ -184,7 +200,7 @@ module.exports = {
                            message: 'user ' + destroyee.firstName + destroyee.lastName + ' successfully deleted.'
                         });
                      } else {
-                        var message = 'deleted ' + destroyee.firstName + ' ' + destroyee.lastName;
+                        var message = 'Deleted ' + destroyee.firstName + ' ' + destroyee.lastName;
                         res.cookie('fooMessage', message);
                         return res.redirect('/admin');
                      }
