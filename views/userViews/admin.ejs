@@ -56,11 +56,12 @@
       <table class="mdl-data-table">
          <thead>
             <tr>
-               <th class="mdl-data-table__cell--non-numeric">#</th>
-               <th class="mdl-data-table__cell--non-numeric">First Name</th>
-               <th class="mdl-data-table__cell--non-numeric">Last Name</th>
-               <th class="mdl-data-table__cell--non-numeric">Email</th>
-               <th class="mdl-data-table__cell--non-numeric">Role</th>
+               <th class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">#</th>
+               <th class="mdl-data-table__cell--non-numeric mdl-layout--small-screen-only">Name</th>
+               <th class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">First Name</th>
+               <th class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">Last Name</th>
+               <th class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">Email</th>
+               <th class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">Role</th>
                <th></th>
                <th></th>
             </tr>
@@ -72,11 +73,12 @@
             <? players = admins; _.forEach(others, function(o) {players.push(o)}) ?>
             <? players.forEach(function(player) { ?>
                <tr>
-                  <th><?= count++ ?></th>
-                  <td class="mdl-data-table__cell--non-numeric"><?= player.firstName ?></td>
-                  <td class="mdl-data-table__cell--non-numeric"><?= player.lastName ?></td>
-                  <td class="mdl-data-table__cell--non-numeric"><?= player.email ?></td>
-                  <td class="mdl-data-table__cell--non-numeric"><?= player.role ?></td>
+                  <th class="mdl-layout--large-screen-only"><?= count++ ?></th>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--small-screen-only"><?= player.firstName ?> <?= player.lastName ?></td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.firstName ?></td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.lastName ?></td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.email ?></td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.role ?></td>
                   <form action="/admin/update?uuid=<?= player.uuid ?>" method="post">
                      <td>
                         <button type="submit" class="mdl-button mdl-button--raised mdl-button-success">edit</button>
