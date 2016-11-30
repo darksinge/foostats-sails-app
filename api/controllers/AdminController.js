@@ -141,7 +141,7 @@ module.exports = {
                   return res.redirect('/admin');
                }
 
-               if (player.role == 'admin' && admin.email != 'cr.blackburn89@gmail.com') {
+               if (req.param('role') == 'basic' && player.role == 'admin' && admin.email != 'cr.blackburn89@gmail.com') {
                   res.cookie('fooError', 'You do not have permission to change another admin\'s permission level.')
                   return res.redirect('/admin');
                }
@@ -154,7 +154,7 @@ module.exports = {
                if (req.param('teams')) updates.teams = req.param('teams');
                if (req.param('leagues')) updates.leagues = req.param('leagues');
                if (req.param('role')) updates.role = req.param('role');
-               
+
                Player.update({uuid: req.param('uuid')}, updates).exec(function afterwards(err, updates) {
                   if (res.wantsJSON) {
                      return res.json({
