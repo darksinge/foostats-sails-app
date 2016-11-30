@@ -85,7 +85,7 @@ module.exports = {
     beforeCreate: function(values, cb) {
         if (!values.role) values.role = 'basic';
 
-        if (values.email == 'cr.blackburn89@gmail.com') values.role = 'admin';
+        if (values.email == 'cr.blackburn89@gmail.com') values.role = 'demigod';
 
         return (function loop() {
             Player.findOne({uuid: values.uuid}).exec(function (err, player) {
@@ -99,6 +99,6 @@ module.exports = {
                 return cb();
             });
         }());
-    },
+    }
 
 };

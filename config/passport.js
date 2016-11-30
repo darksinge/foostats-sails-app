@@ -9,17 +9,11 @@ var verifyHandler = function(accessToken, refreshToken, profile, done) {
          if (err) {
             return done(err);
          } else if (user) {
-
             if (accessToken != user.facebookToken) {
                Player.update({facebookId: user.facebookId}, {facebookToken: accessToken}).exec(function(err, players) {
-                  if (err) {
-                     sails.log.error(err)
-                  } else {
-                     sails.log.info('updated user access token');
-                  }
+                  if (err) { sails.log.error(err); } else { sails.log.info('updated user access token'); }
                });
             }
-
             return done(null, user);
          } else {
             var newUser = {};
@@ -28,7 +22,18 @@ var verifyHandler = function(accessToken, refreshToken, profile, done) {
             newUser.facebookToken = accessToken;
             newUser.firstName     = values.first_name ? values.first_name : profile.name.givenName;
             newUser.lastName      = values.last_name ? values.last_name : profile.name.familyName;
-            newUser.email         = values.email ? values.email : profile.emails[0].value || (newUser.firstName + newUser.lastName + '@_no_primary_email.com')
+
+            if (typeof values.email == 'undefined') {
+               newUser.email = newUser.firstName + newUser.lastName + '@foostats.com';
+            } else if (Array.isArray(values.email)) {
+               if (values.email.length > 0) {
+                  newUser.email = values.email[0];
+               } else {
+                  newUser.email = newUser.firstName + newUser.lastName + '@foostats.com';
+               }
+            } else if (typeof values.email == 'string') {
+               newUser.email = values.email;
+            }
 
             Player.create(newUser).exec(function(err, user) {
                if (err) return done(err);

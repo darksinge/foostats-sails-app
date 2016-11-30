@@ -25,23 +25,24 @@ module.exports = {
 
       if (req.user) {
          Player.find().exec(function(err, players) {
-            if (err) {
-               return res.serverError(err);
-            } else {
-               var data = {};
-
-               data.user = req.user;
-               data.players = players;
-               if (fError) data.error = fError;
-               if (fMessage) data.message = fMessage;
-
-               return res.view('userViews/admin', data);
-            }
+            if (err) { return res.serverError(err); }
+            var data = {};
+            data.user = req.user;
+            data.players = players;
+            if (fError) data.error = fError;
+            if (fMessage) data.message = fMessage;
+            return res.view('userViews/admin', data);
          });
       }
    },
 
    adminUpdateView: function(req, res) {
+
+      if (!req.user) {
+         res.cookie('fooMessage', 'You are not logged in.');
+         return res.redirect('/login');
+      }
+
       var updateeId = req.param('uuid');
 
       if(!updateeId) {
@@ -74,6 +75,12 @@ module.exports = {
    },
 
    adminCreateView: function(req, res) {
+
+      if (!req.user) {
+         res.cookie('fooMessage', 'You are not logged in.');
+         return res.redirect('/login');
+      }
+
       if (req.method == 'GET') {
          return res.view('userViews/adminCreateView')
       } else {
@@ -83,9 +90,9 @@ module.exports = {
 
    adminCreate: function(req, res, next) {
 
-      if (!req.user){
-         res.cookie('fooError', 'You have been logged out.');
-         return res.redirect('/');
+      if (!req.user) {
+         res.cookie('fooMessage', 'You are not logged in.');
+         return res.redirect('/login');
       }
 
       var role = req.user.role ? req.user.role : '';
@@ -116,9 +123,8 @@ module.exports = {
    adminUpdate: function(req, res, next) {
 
       if (!req.user) {
-         return res.redirect('/', {
-            error: 'You are not logged in.'
-         });
+         res.cookie('fooMessage', 'You are not logged in.');
+         return res.redirect('/login');
       }
 
       // uuid - the id of the player to be updated.
@@ -127,74 +133,91 @@ module.exports = {
          return res.redirect('/admin');
       }
 
-      var role = req.user.role ? req.user.role : '';
-      if (role == 'admin') {
-         var updates = {};
-
-         if (req.param('email')) updates.email = req.param('email');
-         if (req.param('firstName')) updates.firstName = req.param('firstName');
-         if (req.param('lastName')) updates.lastName = req.param('lastName');
-         if (req.param('teams')) updates.teams = req.param('teams');
-         if (req.param('leagues')) updates.leagues = req.param('leagues');
-         if (req.param('role')) updates.role = req.param('role');
-
-         Player.update({uuid: req.param('uuid')}, updates).exec(function afterwards(err, updates) {
-            if (res.wantsJSON) {
-               return res.json({
-                  success: true,
-                  updates: updates,
-                  error: err
-               });
-            } else {
-
-               var updatedPlayers = '';
-               if (Array.isArray(updates)) {
-                  if (updates.length == 1) {
-                     updatedPlayers = updates[0].firstName + ' ' + updates[0].lastName;
-                  } else {
-                     updatedPlayers = '<br>';
-                     for (var i = 0; i < updates.length; i++) {
-                        updatedPlayers += '&emsp;' + updates[i].firstName + ' ' + updates[i].lastName;
-                        if (i != updates.length - 1) updatedPlayers += '<br>';
-                     }
-                  }
-
+      Player.findOne({facebookId: req.user.facebookId}).exec(function(err, admin) {
+         if (admin.role == 'admin') {
+            Player.findOne({uuid: req.param('uuid')}).exec(function(err, player) {
+               if (err) {
+                  res.cookie('fooError', err);
+                  return res.redirect('/admin');
                }
 
-               res.cookie('fooMessage', 'Successfully updated player: ' + updatedPlayers)
-               res.redirect('/admin');
-            }
-         });
-      } else {
-         res.forbidden('You must be an admin to perform this action.');
-      }
+               if (player.role == 'admin' && admin.email != 'cr.blackburn89@gmail.com') {
+                  res.cookie('fooError', 'You do not have permission to change another admin\'s permission level.')
+                  return res.redirect('/admin');
+               }
+
+               var updates = {};
+
+               if (req.param('email')) updates.email = req.param('email');
+               if (req.param('firstName')) updates.firstName = req.param('firstName');
+               if (req.param('lastName')) updates.lastName = req.param('lastName');
+               if (req.param('teams')) updates.teams = req.param('teams');
+               if (req.param('leagues')) updates.leagues = req.param('leagues');
+               if (req.param('role')) updates.role = req.param('role');
+               
+               Player.update({uuid: req.param('uuid')}, updates).exec(function afterwards(err, updates) {
+                  if (res.wantsJSON) {
+                     return res.json({
+                        success: true,
+                        updates: updates,
+                        error: err
+                     });
+                  } else {
+
+                     var updatedPlayers = '';
+                     if (Array.isArray(updates)) {
+                        if (updates.length == 1) {
+                           updatedPlayers = updates[0].firstName + ' ' + updates[0].lastName;
+                        } else {
+                           updatedPlayers = '<br>';
+                           for (var i = 0; i < updates.length; i++) {
+                              updatedPlayers += '&emsp;' + updates[i].firstName + ' ' + updates[i].lastName;
+                              if (i != updates.length - 1) updatedPlayers += '<br>';
+                           }
+                        }
+                     }
+                     res.cookie('fooMessage', 'Successfully updated player: ' + updatedPlayers)
+                     res.redirect('/admin');
+                  }
+               });
+            });
+         }  else {
+            res.forbidden('You must be an admin to perform this action.');
+         }
+      });
    },
 
    adminDelete: function(req, res, next) {
+
+      if (!req.user) {
+         res.cookie('fooMessage', 'You are not logged in.');
+         res.redirect('/login');
+      }
+
+      if (!req.user.facebookId) {
+         return res.forbidden('You must have an account linked to Facebook to perform this action.');
+      }
+
       /**
-      @param {uuid} - the pk of the user performing the deletion.
+      @param {userToDestroy} - the pk of the user performing the deletion.
       */
-      var destroyeeId = req.param('uuid');
+      var userToDestroy = req.param('uuid');
 
-      var options = req.headers;
-      if (req.cookies.access_token) options.access_token = req.cookies.access_token;
-
-      FacebookService.resolveAccessTokenOwnerAsync(options)
-      .then(function(admin) {
-         if (admin.role === 'admin') {
-            Player.findOne({uuid:destroyeeId}).exec(function(err, destroyee) {
+      Player.findOne({facebookId: req.user.facebookId}).exec(function(error, admin) {
+         if (admin.role == 'admin') {
+            Player.findOne({uuid:userToDestroy}).exec(function(err, destroyee) {
                if ((destroyee.role == 'admin') && (admin.email != 'cr.blackburn89@gmail.com')) {
                   res.cookie('fooError', 'you cannot delete an admin, like seriously, what the heck is your problem.');
                   return res.redirect('/admin');
                } else if (admin.email == destroyee.email) {
                   res.cookie('fooError', 'you cannot delete yourself. Like, are you suicidal???')
-                  res.redirect('/admin');
+                  return res.redirect('/admin');
                } else {
-                  Player.destroy({uuid:destroyeeId}).exec(function(err) {
-                     if (err) return res.negotiate(err);
+                  Player.destroy({uuid:userToDestroy}).exec(function(err) {
+                     if (err) { return res.negotiate(err); }
                      var deleteMsg = admin.firstName + ' ' + admin.lastName + ' deleted user ' + destroyee.firstName + ' ' + destroyee.lastName;
                      sails.log.warn(deleteMsg);
-                     if ((req.wantsJSON) || (req.options.wantsJSON)) {
+                     if (req.wantsJSON) {
                         return res.json({
                            success: true,
                            message: 'user ' + destroyee.firstName + destroyee.lastName + ' successfully deleted.'
@@ -210,8 +233,6 @@ module.exports = {
          } else {
             return res.forbidden('You are not permitted to perform this action.');
          }
-      }).catch(function(err) {
-         return next(err);
       });
 
    }

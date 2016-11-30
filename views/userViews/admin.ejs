@@ -1,20 +1,4 @@
 
-<style media="screen">
-   h1,h2,h3,h4,h5,h6 {
-      text-align: center;
-   }
-   .text-success {
-      color: #228b22;
-   }
-   .mdl-button-success {
-      background-color: #228b22;
-      color: white;
-   }
-   .mdl-button-alert {
-      background-color: #cd0000;
-      color: white;
-   }
-</style>
 <div class="mdl-grid">
    <div class="mdl-cell mdl-cell--12-col">
       <h3>Admin Dashboard</h3>
@@ -26,11 +10,11 @@
          MESSAGES
       </div>
       <div class="mdl-card__supporting-text">
-         <? if(typeof message != 'undefined') { ?>
-         <p class="text-info"><?- message ?></p>
-         <? }else{ ?>
+         {% if(typeof message != 'undefined') { %}
+         <p class="text-info">{%- message %}</p>
+         {% }else{ %}
          <p class="text-info">No messages</p>
-         <? } ?>
+         {% } %}
       </div>
    </div>
    <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
@@ -38,12 +22,12 @@
          ERRORS
       </div>
       <div class="mdl-card__supporting-text">
-         <? if(typeof error != 'undefined') { ?>
-         <p>Error: <span class="text-danger"><?- error ?></span></p>
-         <? }else{ ?>
+         {% if(typeof error != 'undefined') { %}
+         <p>Error: <span class="text-danger">{%- error %}</span></p>
+         {% }else{ %}
          <p class="text-success">No errors</p>
-         <? } ?>
-         <? var count = 1; ?>
+         {% } %}
+         {% var count = 1; %}
       </div>
    </div>
 </div>
@@ -67,19 +51,19 @@
             </tr>
          </thead>
          <tbody>
-            <? var groups = _.groupBy(players, 'role'); ?>
-            <? var admins = _.sortBy(groups.admin, 'lastName'); ?>
-            <? var others = _.sortBy(groups.basic, 'lastName'); ?>
-            <? players = admins; _.forEach(others, function(o) {players.push(o)}) ?>
-            <? players.forEach(function(player) { ?>
+            {% var groups = _.groupBy(players, 'role'); %}
+            {% var admins = _.sortBy(groups.admin, 'lastName'); %}
+            {% var others = _.sortBy(groups.basic, 'lastName'); %}
+            {% players = admins; _.forEach(others, function(o) {players.push(o)}) %}
+            {% players.forEach(function(player) { %}
                <tr>
-                  <th class="mdl-layout--large-screen-only"><?= count++ ?></th>
-                  <td class="mdl-data-table__cell--non-numeric mdl-layout--small-screen-only"><?= player.firstName ?> <?= player.lastName ?></td>
-                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.firstName ?></td>
-                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.lastName ?></td>
-                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.email ?></td>
-                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only"><?= player.role ?></td>
-                  <form action="/admin/update?uuid=<?= player.uuid ?>" method="post">
+                  <th class="mdl-layout--large-screen-only">{%= count++ %}</th>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--small-screen-only">{%= player.firstName %} {%= player.lastName %}</td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">{%= player.firstName %}</td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">{%= player.lastName %}</td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">{%= player.email %}</td>
+                  <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">{%= player.role %}</td>
+                  <form action="/admin/update?uuid={%= player.uuid %}" method="post">
                      <td>
                         <button type="submit" class="mdl-button mdl-button--raised mdl-button-success">edit</button>
                      </td>
@@ -88,14 +72,12 @@
                      <td>
                         <button type="submit" class="mdl-button mdl-button-raised mdl-button-alert">delete</button>
                      </td>
-                     <input type="hidden" name="uuid" value="<?= player.uuid ?>">
+                     <input type="hidden" name="uuid" value="{%= player.uuid %}">
                   </form>
                </tr>
-               <? }) ?>
+               {% }) %}
             </tbody>
       </table>
    </div>
-   <div class="mdl-cell mdl-cell--2-col">
-
-   </div>
+   <!-- <div class="mdl-cell mdl-cell--2-col"></div> -->
 </div>

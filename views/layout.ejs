@@ -19,59 +19,93 @@
 
 <body cz-shortcut-listen="true">
 
-   <!-- Always shows a header, even in smaller screens. -->
    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-     <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-         <!-- Title -->
+      <header class="mdl-layout__header">
+         <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">FooStats</span>
+            <div class="mdl-layout-spacer"><!-- Add spacer, to align navigation to the right --></div>
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+               <a class="mdl-navigation__link" href="/">Home</a>
+               <a class="mdl-navigation__link" href="/docs">Docs</a>
+               <a class="mdl-navigation__link" href="/dashboard">Dashboard</a>
+               {% if (typeof user != 'undefined') { %}
+               {% if(user.role == 'admin') { %}
+               <a class="mdl-navigation__link" href="/admin">Admin</a>
+               {% } %}
+               <a class="mdl-navigation__link" href="/logout">Logout</a>
+               {% } %}
+            </nav>
+         </div>
+      </header>
+      <div class="mdl-layout__drawer">
          <span class="mdl-layout-title">FooStats</span>
-         <!-- Add spacer, to align navigation to the right -->
-         <div class="mdl-layout-spacer"></div>
-         <!-- Navigation. We hide it in small screens. -->
-         <nav class="mdl-navigation mdl-layout--large-screen-only">
-           <a class="mdl-navigation__link" href="/">Home</a>
-           <a class="mdl-navigation__link" href="/docs">Docs</a>
-           <a class="mdl-navigation__link" href="/dashboard">Dashboard</a>
-           <? if (typeof user != 'undefined') { ?>
-              <? if(user.role == 'admin') { ?>
-                <a class="mdl-navigation__link" href="/admin">Admin</a>
-              <? } ?>
-           <? } ?>
+         <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Home</a>
+            <a class="mdl-navigation__link" href="/docs">Docs</a>
+            <a class="mdl-navigation__link" href="/dashboard">Dashboard</a>
+            {% if (typeof user != 'undefined') { %}
+            {% if(user.role == 'admin') { %}
+            <a class="mdl-navigation__link" href="/admin">Admin</a>
+            {% } %}
+            <a class="mdl-navigation__link" href="/logout">Logout</a>
+            {% } %}
          </nav>
       </div>
-     </header>
-     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
-      <span class="mdl-layout-title">FooStats</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="/">Home</a>
-        <a class="mdl-navigation__link" href="/docs">Docs</a>
-        <a class="mdl-navigation__link" href="/dashboard">Dashboard</a>
-        <? if (typeof user != 'undefined') { ?>
-           <? if(user.role == 'admin') { ?>
-             <a class="mdl-navigation__link" href="/admin">Admin</a>
-           <? } ?>
-        <? } ?>
-      </nav>
-     </div>
-     <main class="mdl-layout__content">
-      <div class="page-content">
-         <?- body ?>
-      </div>
-     </main>
-     <footer class="mdl-mini-footer">
-        <div class="mdl-mini-footer__left-section">
-          <div class="mdl-logo">FooStats.com</div>
-          <ul class="mdl-mini-footer__link-list">
-            <li><a target="_blank" href="https://www.linkedin.com/in/craig-blackburn-887691a5">Developed by Craig Blackburn</a></li>
-            <li><a target="_blank" href="https://heroku.com">Hosted by heroku.com</a></li>
-          </ul>
-        </div>
+      <main class="mdl-layout__content">
+         <div class="page-content">
+            {%- body %}
+         </div>
+      </main>
+      <!-- large-screen footer -->
+      <footer class="mdl-mega-footer mdl-layout--large-screen-only">
+         <div class="mdl-mega-footer__top-section">
+            <div class="mdl-mega-footer__left-section">
+               <div class="mdl-mega-footer__drop-down-section">
+                  <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
+                  <h1 class="mdl-mega-footer__heading">About</h1>
+                  <ul class="mdl-mega-footer__link-list">
+                     <li><a href="/">FooStats.com</a></li>
+                     <li><a target="_blank" href="https://www.linkedin.com/in/craig-blackburn-887691a5">Developed by Craig Blackburn</a></li>
+                     <li><a target="_blank" href="https://heroku.com">Hosted by heroku.com</a></li>
+                  </ul>
+               </div>
+            </div>
+            <div class="mdl-mega-footer__right-section">
+            </div>
+         </div>
+         <div class="mdl-mega-footer__middle-section">
+            <div class="mdl-mega-footer__drop-down-section">
+            </div>
+            <div class="mdl-mega-footer__drop-down-section">
+            </div>
+         </div>
+         <div class="mdl-mega-footer__bottom-section">
+            <div class="mdl-logo">
+            </div>
+            <ul class="mdl-mega-footer__link-list">
+            </ul>
+         </div>
       </footer>
-   </div>
+      <!-- END large footer -->
 
-    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
-    <script src="/js/dependencies/jquery-3.1.1.min.js"></script>
+      <!-- small-screen footer -->
+      <footer class="mdl-mini-footer mdl-layout--small-screen-only">
+         <div class="mdl-mini-footer__left-section">
+            <div class="mdl-logo">About</div>
+            <ul class="mdl-mini-footer__link-list">
+               <li><a href="/">FooStats.com</a></li>
+               <li><a target="_blank" href="https://www.linkedin.com/in/craig-blackburn-887691a5">Developed by Craig Blackburn</a></li>
+               <li><a target="_blank" href="https://heroku.com">Hosted by heroku.com</a></li>
+            </ul>
+         </div>
+      </footer><!-- END small-screen footer -->
+   </div>
+   <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+   <script src="/js/dependencies/jquery-3.1.1.min.js"></script>
 </body>
+
+
+
 
 
 </html>

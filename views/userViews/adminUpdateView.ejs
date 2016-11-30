@@ -1,52 +1,52 @@
 
 <div class="mdl-grid">
    <div class="mdl-cell mdl-cell--12-col">
-      <? if (typeof updatee == 'undefined') { ?>
+      {% if (typeof updatee == 'undefined') { %}
       <h5>Oops, <small class="text-muted">there was a problem...</small></h5>
       <p>Click <a href="/login">here</a> to log back in.</p>
-      <? }else{ ?>
-      <h4>Edit User: <?= updatee.firstName ?></h4>
-      <? } ?>
+      {% }else{ %}
+      <h4>Edit User: {%= updatee.firstName %}</h4>
+      {% } %}
    </div>
 </div>
-<? if (typeof updatee != 'undefined') { ?>
+{% if (typeof updatee != 'undefined') { %}
 <form action="/admin/update/player" method="post">
 <div class="mdl-grid">
    <div class="mdl-cell mdl-cell--8-col">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-         <input class="mdl-textfield__input" type="text" name="firstName" value="<?= updatee.firstName ?>">
+         <input class="mdl-textfield__input" type="text" name="firstName" value="{%= updatee.firstName %}">
          <label class="mdl-textfield__label" for="addr1">First name</label>
       </div>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-         <input class="mdl-textfield__input" type="text" name="lastName" value="<?= updatee.lastName ?>">
+         <input class="mdl-textfield__input" type="text" name="lastName" value="{%= updatee.lastName %}">
          <label class="mdl-textfield__label" for="addr1">Last name</label>
       </div>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-         <input class="mdl-textfield__input" type="text" name="email" value="<?= updatee.email ?>">
+         <input class="mdl-textfield__input" type="text" name="email" value="{%= updatee.email %}">
          <label class="mdl-textfield__label" for="addr1">Email</label>
       </div>
    </div>
    <div class="mdl-cell mdl-cell--4-col">
       <ul class="mdl-list">
-         <? var role = updatee.role; var alt = role == 'admin' ? 'basic' : 'admin' ?>
+         {% var role = updatee.role; var alt = role == 'admin' ? 'basic' : 'admin' %}
          <li class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="list-option-1">
-                  <?= role ?><input type="radio" id="list-option-1" class="mdl-radio__button mdl-js-ripple-effect" name="role" value="<?= role ?>" checked />
+                  {%= role %}<input type="radio" id="list-option-1" class="mdl-radio__button mdl-js-ripple-effect" name="role" value="{%= role %}" checked />
                </label>
             </span>
          </li>
          <li class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="list-option-2">
-                  <?= alt ?><input type="radio" id="list-option-2" class="mdl-radio__button mdl-js-ripple-effect" name="role" value="<?= alt ?>" />
+                  {%= alt %}<input type="radio" id="list-option-2" class="mdl-radio__button mdl-js-ripple-effect" name="role" value="{%= alt %}" />
                </label>
             </span>
          </li>
       </ul>
    </div>
       <td><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">Submit</button></td>
-      <input type="hidden" name="uuid" value="<?= updatee.uuid ?>">
+      <input type="hidden" name="uuid" value="{%= updatee.uuid %}">
    </form>
 </div>
 <div class="mdl-grid">
@@ -55,4 +55,4 @@
    </div>
 </div>
 
-<? } ?>
+{% } %}

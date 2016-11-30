@@ -1,9 +1,9 @@
 
 <div class="mdl-grid">
    <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-      <? if (typeof error != 'undefined') { ?>
-         <p class="text-danger"><?= error ?></p>
-      <? } ?>
+      {% if (typeof error != 'undefined') { %}
+         <p class="text-danger">{%= error %}</p>
+      {% } %}
       <div class="mdl-card mdl-shadow--4dp">
          <div class="mdl-card__title">
             <h2 class="mdl-card__title-text">FooStats.com</h2>
@@ -18,7 +18,7 @@
       </div>
    </div>
    <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-      <? if (typeof user == 'undefined') { ?>
+      {% if (typeof user == 'undefined') { %}
          <div class="mdl-card mdl-shadow--4dp">
             <div class="mdl-card__title">
                <h2 class="mdl-card__title-text">Login or Signup</h2>
@@ -33,6 +33,6 @@
                </form>
             </div>
          </div>
-      <? } ?>
+      {% } %}
    </div>
 </div>

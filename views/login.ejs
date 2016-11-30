@@ -7,16 +7,16 @@
    <div class="container">
       <div class="panel-body">
          <div class="panel-heading">
-            <? if (locals.message) { ?>
-               <p class="text-info lead"><?= message ?></p>
-            <? }else{ ?>
+            {% if (locals.message) { %}
+               <p class="text-info lead">{%= message %}</p>
+            {% }else{ %}
                <p class="text-info lead">debug: no messages</p>
-            <? } ?>
-            <? if (locals.error) { ?>
-               <p class="lead">Error: <span class="text-danger"><?= error ?></span></p>
-            <? }else{ ?>
+            {% } %}
+            {% if (locals.error) { %}
+               <p class="lead">Error: <span class="text-danger">{%= error %}</span></p>
+            {% }else{ %}
                <p class="text-success lead">debug: no errors</p>
-            <? } ?>
+            {% } %}
          </div>
 
          <form class="" action="/auth/facebook" method="post">

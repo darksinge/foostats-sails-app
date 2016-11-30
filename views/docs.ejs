@@ -1,17 +1,16 @@
 <!-- View for API documentation-->
 
 <!-- RESTful Routes -->
-<div class="mdl-grid">
-   <div class="mdl-cell mdl-cell--12-col">
-      <h3 class="">API Documentation</h3>
-   </div>
+<div class="container">
+   <!-- <div class="mdl-cell mdl-cell--12-col"> -->
+      <h3 class="padding">API Documentation</h3>
+   <!-- </div> -->
 </div>
-
 <div class="mdl-grid">
    <div class="mdl-cell mdl-cell--12-col">
-      <h4>Admin Routes</h4>
+      <h4 class="text-align-center">Admin Routes</h4>
+      <p class="text-align-center">User must be authenticated with admin priviledges to have access to these routes.</p>
       <hr>
-      <p>User must be authenticated with admin priviledges to have access to these routes.</p>
    </div>
 </div>
 <div class="mdl-grid">
@@ -39,7 +38,7 @@
             </tbody>
          </table>
          <div class="container-route">
-            <pre><code class"language-html"><?= responses.playersGETRoute() ?></code></pre>
+            <pre><code class"language-html">{%= responses.playersGETRoute() %}</code></pre>
          </div>
       </div>
    </div>
@@ -67,7 +66,7 @@
             </tbody>
          </table>
          <div class="container-route">
-            <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
+            <pre><code class"language-html">{%= responses.teamsGETRoute() %}</code></pre>
          </div>
       </div>
    </div>
@@ -107,7 +106,7 @@
          </table>
 
          <div class="container-route">
-            <pre><code class"language-html"><?= responses.playersGETRoute() ?></code></pre>
+            <pre><code class"language-html">{%= responses.playersGETRoute() %}</code></pre>
          </div>
       </div>
    </div>
@@ -135,7 +134,7 @@
             </tbody>
          </table>
          <div class="container-route">
-            <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
+            <pre><code class"language-html">{%= responses.teamsGETRoute() %}</code></pre>
          </div>
          <table class="mdl-data-table">
             <thead>
@@ -194,7 +193,7 @@
             </tbody>
          </table>
          <div class="container-route">
-            <pre><code class"language-html"><?= responses.teamsGETRoute() ?></code></pre>
+            <pre><code class"language-html">{%= responses.teamsGETRoute() %}</code></pre>
          </div>
          <table class="mdl-data-table">
             <thead>

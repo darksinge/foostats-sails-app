@@ -34,11 +34,11 @@ module.exports.routes = {
    *                                                                          *
    ***************************************************************************/
 
-   '/': 'RoutesController.index',
+   '/': 'PublicController.index',
 
-   'get /login': 'RoutesController.login',
+   'get /login': 'PublicController.login',
 
-   '/docs': 'RoutesController.docs',
+   '/docs': 'PublicController.docs',
 
    //Login and auth routes
    '/verify': 'AuthController.verifyUserAuth',

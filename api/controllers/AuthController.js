@@ -52,14 +52,12 @@ module.exports = {
 
          req.logIn(req.user, function(err) {
             if (err) {
-               if (req.wantsJSON)
-                  return res.serverError(err);
-               else
-                  return res.json({
-                     success: false,
-                     error: err
-                  });
-            }
+               if (req.wantsJSON) { return res.serverError(err); }
+               return res.json({
+                  success: false,
+                  error: err
+               });
+            };
 
             sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
 

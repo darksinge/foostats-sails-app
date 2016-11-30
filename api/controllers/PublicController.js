@@ -1,6 +1,6 @@
 /**
 
-@description :: InterfaceController.js - handles all non API related routes (e.g., '/')
+@description :: PublicController.js - handles all non API related routes (e.g., '/')
 
 */
 

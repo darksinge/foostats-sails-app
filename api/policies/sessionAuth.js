@@ -12,14 +12,6 @@ var passport = require('passport');
 
 module.exports = function(req, res, next) {
 
-   if (req.method == 'GET' && (req.originalUrl == '/' || req.originalUrl == '/docs')) {
-      return next();
-   }
-
-   if (req.originalUrl.includes('auth/facebook')) {
-      return next();
-   }
-
    if (req.user) {
       return next();
    }
