@@ -23,17 +23,15 @@ module.exports = {
          res.clearCookie('fooMessage')
       }
 
-      if (req.user) {
-         Player.find().exec(function(err, players) {
-            if (err) { return res.serverError(err); }
-            var data = {};
-            data.user = req.user;
-            data.players = players;
-            if (fError) data.error = fError;
-            if (fMessage) data.message = fMessage;
-            return res.view('userViews/admin', data);
-         });
-      }
+      Player.find().exec(function(err, players) {
+         if (err) { return res.serverError(err); }
+         var data = {};
+         data.user = req.user;
+         data.players = players;
+         if (fError) data.error = fError;
+         if (fMessage) data.message = fMessage;
+         return res.view('userViews/admin', data);
+      });
    },
 
    adminUpdateView: function(req, res) {

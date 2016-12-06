@@ -12,20 +12,37 @@ var passport = require('passport');
 
 module.exports = function(req, res, next) {
 
-   if (req.user) {
-      return next();
-   }
-
-   if (req.cookies.access_token) {
-      FacebookService.verifyAccessToken(req.cookies.accessToken)
-      .then(function(player) {
-         return next();
-      })
-      .catch(function(err) {
-         return res.redirect('/');
+   if (!req.cookies.jwtToken) {
+      return res.json({
+         success: false,
+         error: 'jwt token not in cookies!'
       });
-   } else {
-      return res.redirect('/');
    }
+   req.headers.authorization = 'JWT ' + req.cookies.jwtToken;
+
+   passport.authenticate('jwt', function(err, user, info) {
+      if (err) {
+         return res.status(500).json({
+            error: err,
+            info: info,
+            success: false
+         });
+      }
+
+      if (!user) {
+         // if (req.wantsJSON) {
+            return res.json({
+               success: false,
+               info: info,
+               error: err
+            });
+         // } else {
+            // return res.redirect('/login');
+         // }
+      }
+
+      req.user = user;
+      return next();
+   })(req, res);
 
 };

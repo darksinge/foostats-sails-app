@@ -1,78 +1,96 @@
-
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
 
-var verifyHandler = function(accessToken, refreshToken, profile, done) {
-   process.nextTick(function() {
-      var values = profile._json;
-      Player.findOne({facebookId: values.id}).exec(function(err, user) {
-         if (err) {
-            return done(err);
-         } else if (user) {
-            if (accessToken != user.facebookToken) {
-               Player.update({facebookId: user.facebookId}, {facebookToken: accessToken}).exec(function(err, players) {
-                  if (err) { sails.log.error(err); } else { sails.log.info('updated user access token'); }
-               });
-            }
-            return done(null, user);
-         } else {
-            var newUser = {};
+const SECRET = 'keyboardcats123';
+const AUDIENCE = 'foostats.herokuapp.com';
+const TOKEN_AGE = 60 * 24 * 7;
+const ALGORITHM = 'HS256';
 
-            newUser.facebookId    = values.id;
-            newUser.facebookToken = accessToken;
-            newUser.firstName     = values.first_name ? values.first_name : profile.name.givenName;
-            newUser.lastName      = values.last_name ? values.last_name : profile.name.familyName;
+var jwtStrategyConfig = {
+   secretOrKey: SECRET,
+   audience: AUDIENCE,
+   jwtFromRequest: ExtractJwt.fromAuthHeader()
+};
 
-            if (typeof values.email == 'undefined') {
+var facebookStrategyConfig = {
+   clientID: process.env.FACEBOOK_APP_ID,
+   clientSecret: process.env.FACEBOOK_APP_SECRET,
+   callbackURL: process.env.NODE_ENV == 'production' ? 'https://foostats.herokuapp.com/auth/facebook/callback' : 'http://localhost:1337/auth/facebook/callback',
+   profileFields: ['id', 'name', 'email']
+}
+
+var facebookAuthHandler = function(accessToken, refreshToken, profile, done) {
+   var values = profile._json;
+   Player.findOne({facebookId: values.id}).exec(function(err, user) {
+      if (err) { return done(err); }
+
+      if (!user) {
+         var newUser = {};
+
+         newUser.facebookId    = values.id;
+         newUser.facebookToken = accessToken;
+         newUser.firstName     = values.first_name ? values.first_name : profile.name.givenName;
+         newUser.lastName      = values.last_name ? values.last_name : profile.name.familyName;
+
+         if (typeof values.email == 'undefined') {
+            newUser.email = newUser.firstName + newUser.lastName + '@foostats.com';
+         } else if (Array.isArray(values.email)) {
+            if (values.email.length > 0) {
+               newUser.email = values.email[0];
+            } else {
                newUser.email = newUser.firstName + newUser.lastName + '@foostats.com';
-            } else if (Array.isArray(values.email)) {
-               if (values.email.length > 0) {
-                  newUser.email = values.email[0];
-               } else {
-                  newUser.email = newUser.firstName + newUser.lastName + '@foostats.com';
-               }
-            } else if (typeof values.email == 'string') {
-               newUser.email = values.email;
             }
+         } else if (typeof values.email == 'string') {
+            newUser.email = values.email;
+         }
 
-            Player.create(newUser).exec(function(err, user) {
-               if (err) return done(err);
-               sails.log.info('Created new user!');
-               return done(null, user);
+         Player.create(newUser).exec(function(err, user) {
+            if (err) return done(err);
+            sails.log.info('Created new user!');
+            return done(null, user);
+         });
+      } else {
+         if (accessToken != user.facebookToken) {
+            Player.update({facebookId: user.facebookId}, {facebookToken: accessToken}).exec(function(err, players) {
+               if (err) {
+                  sails.log.error(err);
+               } else {
+                  sails.log.info('updated user access token');
+               }
             });
          }
-      });
+
+         return done(null, user);
+      }
    });
 };
 
-passport.serializeUser(function(user, done) {
-   return done(null, user.uuid);
-});
+function jwtAuthHandler(payload, done) {
+	Player.findOne({uuid: payload.user.uuid}).exec(function(err, player) {
+		if (err) {
+			return done(err, false);
+		}
 
-passport.deserializeUser(function(uuid, done) {
-   Player.findOne({uuid:uuid}).exec(function(err, player) {
-      return done(err, player);
-   });
-});
+		if (!player) {
+			var error = new Error('User does not exist.', 'passport.js');
+			error.name = 'E_USER_NOT_FOUND'
+			return done(null, false, { message: error });
+		}
 
-passport.use(new FacebookStrategy({
-   clientID: process.env.FACEBOOK_APP_ID,
-   clientSecret: process.env.FACEBOOK_APP_SECRET,
-   callbackURL: process.env.NODE_ENV === 'production' ? 'https://foostats.herokuapp.com/auth/facebook/callback' : 'http://localhost:1337/auth/facebook/callback',
-   profileFields: ['id', 'name', 'email']
-}, verifyHandler));
+		return done(null, player);
+	});
+}
+
+passport.use(new FacebookStrategy(facebookStrategyConfig, facebookAuthHandler));
+
+passport.use(new JwtStrategy(jwtStrategyConfig, jwtAuthHandler));
 
 module.exports.passport = {
-
-   facebookAuth: function(req, res) {
-      passport.authenticate('facebook', {scope: 'email'})(req, res);
+   jwt: {
+      tokenAge: TOKEN_AGE,
+      algorithm: ALGORITHM,
+      audience: AUDIENCE
    },
-
-   facebookCallback: function(req, res, next) {
-      passport.authenticate('facebook', {
-         failureRedirect: '/',
-      })(req, res, next);
-   },
-
-   passport: passport,
 }

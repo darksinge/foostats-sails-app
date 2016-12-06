@@ -25,7 +25,11 @@ module.exports.policies = {
    * access)                                                                  *
    *                                                                          *
    ***************************************************************************/
-   '*': 'sessionAuth',
+   '*': false,
+
+   UserController: {
+      '*': ['sessionAuth'],
+   },
 
    AuthController: {
       '*': false,
@@ -33,6 +37,10 @@ module.exports.policies = {
       facebook: true,
       facebookCallback: true,
       verifyUserAuth: true,
+   },
+
+   AdminController: {
+      '*': ['sessionAuth', 'isAdmin'],
    },
 
    PublicController: {

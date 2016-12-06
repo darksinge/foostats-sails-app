@@ -17,14 +17,27 @@
 
 */
 
-// var passport = require('passport');
-var passport = sails.config.passport;
+var passport = require('passport');
+var jwt = require('jsonwebtoken');
+
+var algorithm = sails.config.passport.jwt.algorithm;
+var tokenAge = sails.config.passport.jwt.tokenAge;
+var audience = sails.config.passport.jwt.audience;
+var secret = process.env.JSON_WEBTOKEN_SECRET || 'keyboardcats123';
+
+function createToken(user) {
+   return jwt.sign({ user: user.toJSON() }, secret, {
+      algorithm: algorithm,
+      expiresIn: tokenAge,
+      audience: audience
+   });
+}
 
 module.exports = {
 
    facebookLogout: function(req, res) {
-      req.logout();
-      req.authenticated = false;
+      req.user = null;
+      res.clearCookie('jwtToken');
       res.clearCookie('access_token')
       res.clearCookie('facebook_id')
       res.clearCookie('fooError')
@@ -33,51 +46,60 @@ module.exports = {
    },
 
    facebook: function(req, res) {
-      return passport.facebookAuth(req, res);
+      passport.authenticate('facebook')(req, res);
    },
 
    facebookCallback: function(req, res) {
-      return passport.facebookCallback(req, res, function(err) {
-         if (err) {
-            sails.log.error(err);
-            if (req.wantsJSON) {
-               return res.json({
-                  success: false,
-                  error: err
-               });
-            } else {
-               return res.redirect('/login');
-            }
-         }
 
-         req.logIn(req.user, function(err) {
-            if (err) {
-               if (req.wantsJSON) { return res.serverError(err); }
-               return res.json({
-                  success: false,
-                  error: err
-               });
-            };
-
-            sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
-
-            res.cookie('access_token', req.user.facebookToken);
-            res.cookie('facebook_id', req.user.facebookId);
-
-            if (req.wantsJSON) {
-               return res.json({
-                  success: true,
-                  user_info: {
-                     name: req.user.firstName + ' ' + req.user.lastName,
-                     access_token: req.user.facebookToken,
-                     facebook_id: req.user.facebookId
-                  }
-               });
-            } else {
-               return res.redirect('/dashboard');
-            }
-         });
+      passport.authenticate('facebook', {
+         failureRedirect: '/login',
+         session: false
+      })(req, res, function() {
+         res.cookie('jwtToken', createToken(req.user));
+         return res.redirect('/dashboard');
       });
+
+      // return passport.facebookCallback(req, res, function(err) {
+      //    if (err) {
+      //       sails.log.error(err);
+      //       if (req.wantsJSON) {
+      //          return res.json({
+      //             success: false,
+      //             error: err
+      //          });
+      //       } else {
+      //          return res.redirect('/login');
+      //       }
+      //    }
+      //
+      //    req.logIn(req.user, function(err) {
+      //       if (err) {
+      //          if (req.wantsJSON) { return res.serverError(err); }
+      //          return res.json({
+      //             success: false,
+      //             error: err
+      //          });
+      //       };
+      //
+      //       sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
+      //
+      //       res.cookie('access_token', req.user.facebookToken);
+      //       res.cookie('facebook_id', req.user.facebookId);
+      //
+      //       if (req.wantsJSON) {
+      //          return res.json({
+      //             success: true,
+      //             user_info: {
+      //                name: req.user.firstName + ' ' + req.user.lastName,
+      //                access_token: req.user.facebookToken,
+      //                facebook_id: req.user.facebookId
+      //             }
+      //          });
+      //       } else {
+      //          return res.redirect('/dashboard');
+      //       }
+      //    });
+      // });
    },
 
    verifyUserAuth: function(req, res) {
