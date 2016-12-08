@@ -1,6 +1,6 @@
-# foosball
+# FooStats
 
-# A [Sails.js](http://sailsjs.org) Web Application
+###### A [Sails.js](http://sailsjs.org) Web Application
 
 ## Foostats Mobile Application Requirements
 
