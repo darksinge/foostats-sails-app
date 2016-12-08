@@ -25,12 +25,17 @@ module.exports = {
 
       Player.find().exec(function(err, players) {
          if (err) { return res.serverError(err); }
+
+			if (players) {
+				_.sortBy(players, ['lastName', 'firstName', 'role']);
+			}
+
          var data = {};
-         data.user = req.user;
+         // data.user = req.user;
          data.players = players;
          if (fError) data.error = fError;
          if (fMessage) data.message = fMessage;
-         return res.view('userViews/admin', data);
+         return res.view('user/admin', data);
       });
    },
 
@@ -53,7 +58,8 @@ module.exports = {
       Player.findOne({facebookToken:adminToken}).exec(function(err, admin) {
          if (err){
             var errorMessage = encodeURIComponent('admin not found! Take a hike. This is actually a pretty serious problem... you should probably tell someone...');
-            return res.redirect('/admin?error=' + errorMessage)
+				res.cookie('fooError', errorMessage);
+            return res.redirect('/admin')
          } else {
             Player.findOne({uuid:updateeId}).exec(function(err, updatee) {
                if (err) {
@@ -62,8 +68,8 @@ module.exports = {
                   var errorMessage = encodeURIComponent('user not found. Take a hike.');
                   return res.redirect('/admin?error=' + errorMessage)
                } else {
-                  return res.view('userViews/adminUpdateView', {
-                     user: admin,
+                  return res.view('user/adminUpdateView', {
+                     // user: admin,
                      updatee: updatee
                   });
                }
@@ -80,7 +86,7 @@ module.exports = {
       }
 
       if (req.method == 'GET') {
-         return res.view('userViews/adminCreateView')
+         return res.view('user/adminCreateView')
       } else {
          return res.redirect('/admin');
       }
@@ -232,8 +238,14 @@ module.exports = {
             return res.forbidden('You are not permitted to perform this action.');
          }
       });
+   },
 
-   }
+	createDummies: function(req, res) {
+		Player.createDummyPlayers(function(err, players) {
+			if (err) res.cookie('fooError', JSON.stringify(err, null, 2));
+			return res.redirect('/admin')
+		});
+	},
 
 
 }

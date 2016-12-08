@@ -7,22 +7,19 @@
 module.exports = {
 
    dashboard: function(req, res) {
+		Player.findOne({uuid: req.user.uuid}).exec(function(err, user) {
+			if (err) return res.serverError(err);
+			if (!user) {
+				res.cookie('fooMessage', 'You are not logged in, please log in again.');
+	         return res.redirect('/login');
+			}
 
-      if (req.user) {
-         Player.findOne({facebookId: req.user.facebookId}).exec(function(err, user) {
-            if (err) return res.serverError(err);
-            if (!user) return res.redirect('/login');
-            return res.view('userViews/dashboard', {
-               user: user
-            });
-         })
-      } else {
-         //TODO - change to res.redirect with params
-         return res.view('login', {
-            error: err,
-            message: 'Your session has expired, please log in again.'
-         });
-      }
+			res.locals.user = user.toJSON();
+
+			return res.view('user/dashboard');
+
+
+		});
    },
 
 }

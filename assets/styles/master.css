@@ -14,11 +14,23 @@ html,body {
 .mdl-grid {
 	max-width: 1000px;
 }
+.mdl-data-table > tr:nth-child(even) {
+	background-color: #f2f2f2;
+	/*border: solid lightgray;
+	border-width: 1px;
+	border-collapse: collapse;*/
+}
+th.mdl-data-table__cell {
+	vertical-align: middle !important;
+	padding: 0;
+}
 
 .text-left, .text-left::after {
 	text-align: left !important;
 }
-
+.padding {
+	padding: 1%;
+}
 code {
 	color: #FF1493;
 }
@@ -26,7 +38,6 @@ code {
 ul.footer-list {
 	list-style-type: none;
 	padding: 0;
-	/*margin: 0;*/
 }
 
 ul.footer-list li a {
@@ -35,7 +46,6 @@ ul.footer-list li a {
 }
 
 ul.footer-list li a:hover {
-	/*light grey*/
 	color: #D3D3D3;
 }
 

@@ -8,41 +8,27 @@
 *
 */
 
-var passport = require('passport');
-
 module.exports = function(req, res, next) {
+	JWTService.authenticate(req, res, function(err, user, info) {
+		if (err) {
+			return res.status(500).json({
+				error: err,
+				info: info,
+				success: false
+			});
+		}
 
-   if (!req.cookies.jwtToken) {
-      return res.json({
-         success: false,
-         error: 'jwt token not in cookies!'
-      });
-   }
-   req.headers.authorization = 'JWT ' + req.cookies.jwtToken;
+		if (!user) {
+			return res.json({
+				success: false,
+				info: info,
+				error: err
+			});
+		}
 
-   passport.authenticate('jwt', function(err, user, info) {
-      if (err) {
-         return res.status(500).json({
-            error: err,
-            info: info,
-            success: false
-         });
-      }
-
-      if (!user) {
-         // if (req.wantsJSON) {
-            return res.json({
-               success: false,
-               info: info,
-               error: err
-            });
-         // } else {
-            // return res.redirect('/login');
-         // }
-      }
-
-      req.user = user;
-      return next();
-   })(req, res);
-
+		req.user = user;
+		res.locals = req.options.locals || {};
+		res.locals.user = user;
+		return next();
+	});
 };

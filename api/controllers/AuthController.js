@@ -50,7 +50,6 @@ module.exports = {
    },
 
    facebookCallback: function(req, res) {
-
       passport.authenticate('facebook', {
          failureRedirect: '/login',
          session: false
@@ -58,48 +57,6 @@ module.exports = {
          res.cookie('jwtToken', createToken(req.user));
          return res.redirect('/dashboard');
       });
-
-      // return passport.facebookCallback(req, res, function(err) {
-      //    if (err) {
-      //       sails.log.error(err);
-      //       if (req.wantsJSON) {
-      //          return res.json({
-      //             success: false,
-      //             error: err
-      //          });
-      //       } else {
-      //          return res.redirect('/login');
-      //       }
-      //    }
-      //
-      //    req.logIn(req.user, function(err) {
-      //       if (err) {
-      //          if (req.wantsJSON) { return res.serverError(err); }
-      //          return res.json({
-      //             success: false,
-      //             error: err
-      //          });
-      //       };
-      //
-      //       sails.log.info(req.user.firstName + ' ' + req.user.lastName + ' logged in.');
-      //
-      //       res.cookie('access_token', req.user.facebookToken);
-      //       res.cookie('facebook_id', req.user.facebookId);
-      //
-      //       if (req.wantsJSON) {
-      //          return res.json({
-      //             success: true,
-      //             user_info: {
-      //                name: req.user.firstName + ' ' + req.user.lastName,
-      //                access_token: req.user.facebookToken,
-      //                facebook_id: req.user.facebookId
-      //             }
-      //          });
-      //       } else {
-      //          return res.redirect('/dashboard');
-      //       }
-      //    });
-      // });
    },
 
    verifyUserAuth: function(req, res) {

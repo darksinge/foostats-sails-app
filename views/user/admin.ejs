@@ -4,39 +4,39 @@
       <h3>Admin Dashboard</h3>
    </div>
 </div>
+{% if (typeof message != 'undefined' || typeof error != 'undefined') { %}
 <div class="mdl-grid">
+	{% if(typeof message != 'undefined') { %}
    <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
       <div class="mdl-card__title">
          MESSAGES
       </div>
       <div class="mdl-card__supporting-text">
-         {% if(typeof message != 'undefined') { %}
          <p class="text-info">{%- message %}</p>
-         {% }else{ %}
-         <p class="text-info">No messages</p>
-         {% } %}
       </div>
    </div>
+	{% } %}
+	{% if(typeof error != 'undefined') { %}
    <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
       <div class="mdl-card__title">
          ERRORS
       </div>
       <div class="mdl-card__supporting-text">
-         {% if(typeof error != 'undefined') { %}
          <p>Error: <span class="text-danger">{%- error %}</span></p>
-         {% }else{ %}
-         <p class="text-success">No errors</p>
-         {% } %}
-         {% var count = 1; %}
       </div>
    </div>
+	{% } %}
 </div>
+{% } %}
 
 <div class="mdl-grid">
+	<form style="padding-left: 8px;"action="/admin/create/player" method="get">
+		<button type="submit" name="createPlayer" class="mdl-button mdl-button--raised mdl-button--accent">Create Player +</button>
+	</form>
+	<form style="padding-left: 8px;" action="/admin/createdummies" method="get">
+		<button type="submit" name="createDummies" class="mdl-button mdl-button--raised mdl-button--accent">Create Dummy Players +</button>
+	</form>
    <div class="mdl-cell mdl-cell--10-col">
-      <form class="" action="/admin/create/player" method="get">
-         <button type="submit" name="createPlayer" class="mdl-button mdl-button--raised mdl-button--accent">Create Player +</button>
-      </form>
       <table class="mdl-data-table">
          <thead>
             <tr>
@@ -51,13 +51,10 @@
             </tr>
          </thead>
          <tbody>
-            {% var groups = _.groupBy(players, 'role'); %}
-            {% var admins = _.sortBy(groups.admin, 'lastName'); %}
-            {% var others = _.sortBy(groups.basic, 'lastName'); %}
-            {% players = admins; _.forEach(others, function(o) {players.push(o)}) %}
-            {% players.forEach(function(player) { %}
+				{% var count = 1; %}
+            {% _.forEach(players, function(player) { %}
                <tr>
-                  <th class="mdl-layout--large-screen-only">{%= count++ %}</th>
+                  <th class="mdl-data-table__cell mdl-layout--large-screen-only">{%= count++ %}</th>
                   <td class="mdl-data-table__cell--non-numeric mdl-layout--small-screen-only">{%= player.firstName %} {%= player.lastName %}</td>
                   <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">{%= player.firstName %}</td>
                   <td class="mdl-data-table__cell--non-numeric mdl-layout--large-screen-only">{%= player.lastName %}</td>
@@ -75,9 +72,8 @@
                      <input type="hidden" name="uuid" value="{%= player.uuid %}">
                   </form>
                </tr>
-               {% }) %}
+               {% }); %}
             </tbody>
       </table>
    </div>
-   <!-- <div class="mdl-cell mdl-cell--2-col"></div> -->
 </div>

@@ -28,7 +28,7 @@ module.exports.policies = {
    '*': false,
 
    UserController: {
-      '*': ['sessionAuth'],
+      '*': ['sessionAuth', 'addLocals'],
    },
 
    AuthController: {
@@ -40,12 +40,20 @@ module.exports.policies = {
    },
 
    AdminController: {
-      '*': ['sessionAuth', 'isAdmin'],
+      '*': ['sessionAuth', 'isAdmin', 'addLocals'],
    },
 
    PublicController: {
-      '*': true
-   }
+      '*': ['addLocals']
+   },
+
+	PlayerController: {
+		'*': ['sessionAuth', 'addLocals']
+	},
+
+	UserController: {
+		'*': ['sessionAuth', 'addLocals']
+	}
 
 
    /***************************************************************************
