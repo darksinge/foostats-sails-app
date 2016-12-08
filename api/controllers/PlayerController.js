@@ -9,7 +9,20 @@ module.exports = {
 
 	findOne: function(req, res) {
 
-		
+		var id = req.params.id;
+		sails.log.info("ID: " + id);
+		if (id) {
+			return res.json({
+				success: true,
+				id: id
+			});
+		}
+
+		return res.json({
+			success: false,
+			id: null
+		});
+
 
 	},
 

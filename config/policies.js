@@ -53,7 +53,11 @@ module.exports.policies = {
 
 	UserController: {
 		'*': ['sessionAuth', 'addLocals']
-	}
+	},
+
+   CertbotController: {
+      '*': true
+   },
 
 
    /***************************************************************************

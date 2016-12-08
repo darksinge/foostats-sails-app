@@ -34,11 +34,16 @@ module.exports.routes = {
    *                                                                          *
    ***************************************************************************/
 
-   '/': 'PublicController.index',
+   // Certbot - let's encrypt!
+   'GET /.well-known/acme-challenge/:id': 'CertbotController.encrypt',
 
-   'get /login': 'PublicController.login',
+   '/': {
+      controller: 'PublicController',
+      action: 'index'
+   },
 
-   '/docs': 'PublicController.docs',
+   'GET /login': 'PublicController.login',
+   'GET /docs': 'PublicController.docs',
 
    //Login and auth routes
    '/verify': 'AuthController.verifyUserAuth',
@@ -48,27 +53,18 @@ module.exports.routes = {
 
    // Admin routes
    '/admin': 'AdminController.adminDashboard',
-   'post /admin/update/player': 'AdminController.adminUpdate',
-   'post /admin/update': 'AdminController.adminUpdateView',
-   'post /admin/create/player': 'AdminController.adminCreate',
-   'get /admin/create/player': 'AdminController.adminCreateView',
-   'post /admin/delete/player': 'AdminController.adminDelete',
-	'get /admin/createdummies': 'AdminController.createDummies',
+   'POST /admin/update/player': 'AdminController.adminUpdate',
+   'POST /admin/update': 'AdminController.adminUpdateView',
+   'POST /admin/create/player': 'AdminController.adminCreate',
+   'GET /admin/create/player': 'AdminController.adminCreateView',
+   'POST /admin/delete/player': 'AdminController.adminDelete',
+	'GET /admin/createdummies': 'AdminController.createDummies',
 
    // User routes
    '/dashboard': 'UserController.dashboard',
 
    // REST API Routes
-   'put /players': 'PlayerController.update',
-
-   /***************************************************************************
-   *                                                                          *
-   * Custom routes here...                                                    *
-   *                                                                          *
-   * If a request to a URL doesn't match any of the custom routes above, it   *
-   * is matched against Sails route blueprints. See `config/blueprints.js`    *
-   * for configuration options and examples.                                  *
-   *                                                                          *
-   ***************************************************************************/
+   'PUT /players': 'PlayerController.update',
+   'GET /player/:id': 'PlayerController.findOne',
 
 };
