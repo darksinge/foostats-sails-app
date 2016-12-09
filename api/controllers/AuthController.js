@@ -55,27 +55,32 @@ module.exports = {
          failureRedirect: '/login',
          session: false
       })(req, res, function() {
-
-         Player.findOne({uuid: req.user.uuid}).exec(function(err, user) {
-            if (err) return res.json({
-               success: false,
-               error: err
-            });
-            if (!user) return res.json({
-               success: false,
-               error: 'User not found!'
-            });
-            try {
-               var token = createToken(req.user);
-               res.cookie('jwtToken', token);
-               return res.redirect('/dashboard');
-            } catch(e) {
-               return res.json({
+         try {
+            Player.findOne({uuid: req.user.uuid}).exec(function(err, user) {
+               if (err) return res.json({
                   success: false,
-                  error: e
+                  error: err
                });
-            }
-         });
+               if (!user) return res.json({
+                  success: false,
+                  error: 'User not found!'
+               });
+               try {
+                  var token = createToken(req.user);
+                  res.cookie('jwtToken', token);
+                  return res.redirect('/dashboard');
+               } catch(e) {
+                  return res.json({
+                     success: false,
+                     error: e
+                  });
+               }
+            });
+         } catch(e) {
+            sails.log.error(e);
+            return res.serverError(e);
+         }
+
       });
    },
 
