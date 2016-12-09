@@ -54,35 +54,39 @@ module.exports = {
       passport.authenticate('facebook', {
          failureRedirect: '/login',
          session: false
-      })(req, res, function() {
+      }, function(err, user, info) {
+         sails.log.info('Error: ', err);
+         sails.log.info('User: ', user);
+         sails.log.info('Info: ', info);
          try {
-            Player.findOne({uuid: req.user.uuid}).exec(function(err, user) {
-               if (err) return res.json({
-                  success: false,
-                  error: err
-               });
-               if (!user) return res.json({
-                  success: false,
-                  error: 'User not found!'
-               });
+            if (err) throw err;
+            if (!user) throw new Error('user is undefined');
+            if (info != {}) sails.log.warn('Info from facebook callback: ', info);
+
+            Player.findOne({uuid: user.uuid}).exec(function(err, user) {
+               if (err) throw err
+               if (!user) throw new Error('user not found!');
+
                try {
-                  var token = createToken(req.user);
+                  var token = createToken(user);
                   res.cookie('jwtToken', token);
                   return res.redirect('/dashboard');
                } catch(e) {
-                  return res.json({
-                     success: false,
-                     error: e
-                  });
+                  throw e;
                }
+
             });
          } catch(e) {
             sails.log.error(e);
-            return res.serverError(e);
+            return res.json({
+               success: false,
+               error: e
+            });
          }
-
-      });
+      })(req, res);
    },
+
+
 
    verifyUserAuth: function(req, res) {
       FacebookService.verifyAccessToken(req.param["access_token"])
