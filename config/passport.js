@@ -11,7 +11,13 @@ const ALGORITHM = 'HS256';
 var jwtStrategyConfig = {
    secretOrKey: SECRET,
    audience: AUDIENCE,
-   jwtFromRequest: ExtractJwt.fromAuthHeader()
+   jwtFromRequest: function cookieExtractor(req) {
+	  var token = null;
+	  if (req && req.cookies) {
+		  token = req.cookies.jwtToken;
+	  }
+	  return token;
+  },
 };
 
 var facebookStrategyConfig = {

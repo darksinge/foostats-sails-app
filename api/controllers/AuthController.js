@@ -23,10 +23,11 @@ var jwt = require('jsonwebtoken');
 var algorithm = sails.config.passport.jwt.algorithm;
 var tokenAge = sails.config.passport.jwt.tokenAge;
 var audience = sails.config.passport.jwt.audience;
-var secret = process.env.JSON_WEBTOKEN_SECRET || 'keyboardcats123';
+var secret = 'keyboardcats123';
 
 function createToken(user) {
-   return jwt.sign({ user: user.toJSON() }, secret, {
+   if (typeof user == 'undefined') throw new Error("user is not defined");
+   return jwt.sign({ user: user }, secret, {
       algorithm: algorithm,
       expiresIn: tokenAge,
       audience: audience
@@ -54,8 +55,27 @@ module.exports = {
          failureRedirect: '/login',
          session: false
       })(req, res, function() {
-         res.cookie('jwtToken', createToken(req.user));
-         return res.redirect('/dashboard');
+
+         Player.findOne({uuid: req.user.uuid}).exec(function(err, user) {
+            if (err) return res.json({
+               success: false,
+               error: err
+            });
+            if (!user) return res.json({
+               success: false,
+               error: 'User not found!'
+            });
+            try {
+               var token = createToken(req.user);
+               res.cookie('jwtToken', token);
+               return res.redirect('/dashboard');
+            } catch(e) {
+               return res.json({
+                  success: false,
+                  error: e
+               });
+            }
+         });
       });
    },
 
