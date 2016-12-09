@@ -17,7 +17,8 @@ module.exports.models = {
   * connections (see `config/connections.js`)                                *
   *                                                                          *
   ***************************************************************************/
-  connection: process.env.NODE_ENV === 'development' ? 'localDiskDb' : 'clearDbServer',
+  // connection: process.env.NODE_ENV === 'development' ? 'localDiskDb' : 'clearDbServer',
+  connection: 'clearDbServer',
 
   /***************************************************************************
   *                                                                          *

@@ -55,13 +55,10 @@ module.exports = {
          failureRedirect: '/login',
          session: false
       }, function(err, user, info) {
-         sails.log.info('Error: ', err);
-         sails.log.info('User: ', user);
-         sails.log.info('Info: ', info);
          try {
             if (err) throw err;
             if (!user) throw new Error('user is undefined');
-            if (info != {}) sails.log.warn('Info from facebook callback: ', info);
+            if (Object.keys(info).length > 0) sails.log.warn('Info from facebook callback: ', info);
 
             Player.findOne({uuid: user.uuid}).exec(function(err, user) {
                if (err) throw err
