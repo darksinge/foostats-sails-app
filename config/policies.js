@@ -63,7 +63,9 @@ module.exports.policies = {
       '*': ['sessionAuth', 'addLocals']
    },
 
-
+   DevController: {
+      '*': ['sessionAuth', 'isAdmin', 'addLocals']
+   },
 
    CertbotController: {
       '*': true

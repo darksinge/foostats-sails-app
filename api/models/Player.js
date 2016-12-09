@@ -119,14 +119,12 @@ module.exports = {
 	* @param values - object that contains a player uuid or an access_token.
 	* @param cb - takes two arguments. The first argument is an error, and the second is a player object.
 	*/
-	fetchPlayerObject: function(values, cb) {
+	fetchPlayerObject: function(values, next) {
 		if (values.uuid) {
 			Player.findOne({uuid: values.uuid}).exec(function(err, player){
-				if (err) return cb(err);
-				if (_.isObject(player)) {
-					return cb(null, player)
-				}
-				return cb(new Error('player not found.'));
+				if (err) return next(err);
+				if (!player) return next(new Error('player not found.'));
+				return next(null, player);
 			});
 		} else {
 			FacebookService.fetchFacebookUser(values.access_token, function(err, facebookUser) {
@@ -139,23 +137,22 @@ module.exports = {
 		}
 	},
 
-	beforeCreate: function(values, cb) {
+	beforeCreate: function(values, next) {
 		if (values.email == 'cr.blackburn89@gmail.com') values.role = 'admin';
 		if (!values.role) values.role = 'basic';
-		if (!values.username) values.username = values.firstName + ' ' + values.lastName
+		if (!values.username && values.firstName && values.lastName) values.username = values.firstName + ' ' + values.lastName;
 
-		return (function loop() {
-			Player.findOne({uuid: values.uuid}).exec(function (err, player) {
-				if (err) return cb(err);
-
+		(function checkForUuidCollisions(_values) {
+			Player.findOne({uuid: _values.uuid}).exec(function(err, player) {
+				if (err) return next(err);
 				if (player) {
-					values.uuid = uuid.v4();
-					return loop();
+					_values.uuid = uuid.v4();
+					return checkForUuidCollisions(_values);
+				} else {
+					return next();
 				}
-
-				return cb();
 			});
-		}());
+		})(values);
 	}
 
 };

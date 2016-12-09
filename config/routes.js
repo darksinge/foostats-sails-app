@@ -52,7 +52,7 @@ module.exports.routes = {
    '/logout': 'AuthController.facebookLogout',
 
    // Admin routes
-   '/admin': 'AdminController.adminDashboard',
+   'GET /admin': 'AdminController.adminDashboard',
    'POST /admin/update/player': 'AdminController.adminUpdate',
    'POST /admin/update': 'AdminController.adminUpdateView',
    'POST /admin/create/player': 'AdminController.adminCreate',
@@ -61,10 +61,14 @@ module.exports.routes = {
 	'GET /admin/createdummies': 'AdminController.createDummies',
 
    // User routes
-   '/dashboard': 'UserController.dashboard',
+   'GET /dashboard': 'UserController.dashboard',
+   'POST /dashboard/addconnection': 'UserController.addConnection',
 
    // REST API Routes
    'PUT /players': 'PlayerController.update',
    'GET /player/:id': 'PlayerController.findOne',
+
+   // Dev routes
+   '/dev/test': 'DevController.test',
 
 };
