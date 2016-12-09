@@ -47,15 +47,6 @@
 
 <div class="mdl-grid">
 	<div class="mdl-cell mdl-cell--12-col">
-		<button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="test-button">Click me!</button>
-		{% if (typeof testString != 'undefined') { %}
-		<p>Your test string says: {%= testString %}</p>
-		{% } %}
-	</div>
-</div>
-
-<div class="mdl-grid">
-	<div class="mdl-cell mdl-cell--12-col">
 		{% if (user.teams) { %}
 		<h5>You do not belong to any teams.</h5>
 		{% } else { %}
@@ -63,48 +54,8 @@
 		{% } %}
 	</div>
 
-	<script id="card-template" type="text/x-custom-template">
-	<div class="player-connection-card mdl-card mdl-shadow--2dp" id="connection-card">
-		<div class="mdl-card__title mdl-card--expand">
-			<div class="mdl-card__title-text">
-				<h1 id="playername">Player Name</h1>
-			</div>
-		</div>
-		<div class="mdl-card__media">
-			<img src="/images/image-placeholder.png" id="playerimage">
-		</div>
-		<div class="mdl-card__supporting-text">
-			<p id="playerWins">[player name] has 10 wins</p>
-			<p id="playerRank">[player name] is ranked 3/10 players</p>
-		</div>
-		<div class="mdl-card__actions mdl-card--border">
-			<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-				Create Team
-			</a>
-		</div>
-	</div>
-	 </script>
 
-	<script>
-	$('document').ready(function() {
-		$.get("/player")
-		.done(function(data) {
-			var connections = data.players;
-			var $template = $('#card-template').html();
-			console.log($template);
-			for (var i = 0; i < connections.length; i++) {
-				var $card = $template;
-				$card.attr('id', connections[i].uuid);
-				$card.find('#playerWins').html('<p>' + connections[i].firstName + ' has 10 wins</p>')
-				$card.find('#playerRank').html('<p>' + connections[i].firstName + ' has 10 wins</p>')
-				$('connections').append(card);
-			}
-		})
-		.fail(function(err) {
-			console.error(err);
-		});
-	});
-	</script>
+
 
 
 
@@ -113,8 +64,29 @@
 	</div>
 	<div class="mdl-cell mdl-cell--4-col mdl-shadow--2dp" id="connection-cards">
 		<h6 class="text-center">Connections</h6>
-		<span id="connections"></span>
-		<br>
+
+		{% if (typeof players != 'undefined') { %}
+			{% _.forEach(players, function(value, key) { %}
+			<div class="player-connection-card mdl-card mdl-shadow--2dp" id="connection-card">
+				<div class="mdl-card__title mdl-card--expand">
+					<div class="mdl-card__title-text">
+						<h1 id="connection-name">{%= value.firstName + ' ' + value.lastName %}</h1>
+					</div>
+				</div>
+				<div class="mdl-card__media">
+					<img src="/images/image-placeholder.png" id="connection-image">
+				</div>
+				<div class="mdl-card__supporting-text">
+
+				</div>
+				<div class="mdl-card__actions mdl-card--border">
+					<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="connection-add" value="connection-uuid">Add To Team +</button>
+				</div>
+			</div>
+			<br>
+			{% }); %}
+		{% } %}
+
 	</div>
 </div>
 

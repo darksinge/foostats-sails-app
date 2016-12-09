@@ -1,30 +1,42 @@
-<div class="page-wrap">
-   <div class="container">
-      <div class="page-header">
-         <h1>Login</h1>
-      </div>
-   </div>
-   <div class="container">
-      <div class="panel-body">
-         <div class="panel-heading">
-            {% if (locals.message) { %}
-               <p class="text-info lead">{%= message %}</p>
-            {% }else{ %}
-               <p class="text-info lead">debug: no messages</p>
-            {% } %}
-            {% if (locals.error) { %}
-               <p class="lead">Error: <span class="text-danger">{%= error %}</span></p>
-            {% }else{ %}
-               <p class="text-success lead">debug: no errors</p>
-            {% } %}
-         </div>
+<style media="screen">
+button, .mdl-button, .facebook-button {
+	height: 50px;
+	background-color: #ffa;
+}
+.facebook-button {
+	display: block;
+	margin: 0 auto;
+}
+.facebook-button > img {
+	height: 36px;
+	width: 200px;
+}
+.login-form {
+	display: block;
+	margin: 0 auto;
+	width: auto;
+}
+</style>
 
-         <form class="" action="/auth/facebook" method="post">
-            <button type="submit" class="btn btn-default" style="border:none;">
-               <!-- <button onclick="displayError()" class="btn btn-default" style="border:none;"> -->
-               <img src="images/fbLoginBtn.png" class="img-responsive" />
-            </button>
-         </form>
-      </div>
-   </div>
+<div class="mdl-grid">
+	<div class="mdl-cell mdl-cell--12-col">
+		<h3 class="text-align-center">Login</h3>
+	</div>
+	<div class="mdl-cell mdl-cell--3-col"></div>
+	<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp">
+		{% if (typeof message != 'undefined') { %}
+		<p class="text-info padding text-align-center">{%= message %}</p>
+		{% } %}
+		{% if (typeof error != 'undefined') { %}
+		<p class="padding text-align-center"><span class="text-danger">{%= error %}</span></p>
+		{% } %}
+	</div>
+	<div class="mdl-cell mdl-cell--12-col">
+		<form class="login-form" action="/auth/facebook" method="post">
+			<button type="submit" class="mdl-button facebook-button" style="border:none;">
+				<!-- <button onclick="displayError()" class="btn btn-default" style="border:none;"> -->
+				<img src="images/fbLoginBtn.png" class="" />
+			</button>
+		</form>
+	</div>
 </div>

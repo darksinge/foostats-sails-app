@@ -32,7 +32,6 @@ module.exports = {
 
    login: function(req, res) {
       var data = {};
-
       if (req.cookies.fooError) data.error = req.cookies.fooError;
       if (req.cookies.fooMessage) data.message = req.cookies.fooMessage;
 

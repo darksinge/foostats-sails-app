@@ -18,12 +18,14 @@ module.exports = function(req, res, next) {
 			});
 		}
 
+		if (info && info.name == 'TokenExpiredError') {
+			res.cookie('fooError', 'Your session has expired, please log back in.');
+			return res.redirect('/login');
+		}
+
 		if (!user) {
-			return res.json({
-				success: false,
-				info: info,
-				error: err
-			});
+			res.cookie('fooError', 'You are not logged in.');
+			return res.redirect('/login');
 		}
 
 		req.user = user;
