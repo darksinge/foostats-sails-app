@@ -25,7 +25,7 @@ module.exports.policies = {
    * access)                                                                  *
    *                                                                          *
    ***************************************************************************/
-   '*': false,
+   '*': ['sessionAuth'],
 
    UserController: {
       '*': ['sessionAuth', 'addLocals'],
@@ -47,13 +47,23 @@ module.exports.policies = {
       '*': ['addLocals']
    },
 
-	PlayerController: {
-		'*': ['sessionAuth', 'addLocals']
-	},
+   PlayerController: {
+      '*': ['sessionAuth', 'addLocals']
+   },
 
-	UserController: {
-		'*': ['sessionAuth', 'addLocals']
-	},
+   UserController: {
+      '*': ['sessionAuth', 'addLocals']
+   },
+
+   TeamController: {
+      '*': ['sessionAuth', 'addLocals']
+   },
+
+   LeagueController: {
+      '*': ['sessionAuth', 'addLocals']
+   },
+
+
 
    CertbotController: {
       '*': true
