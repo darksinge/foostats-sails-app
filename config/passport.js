@@ -11,13 +11,27 @@ const ALGORITHM = 'HS256';
 var jwtStrategyConfig = {
    secretOrKey: SECRET,
    audience: AUDIENCE,
-   jwtFromRequest: function cookieExtractor(req) {
-	  var token = null;
-	  if (req && req.cookies) {
-		  token = req.cookies.jwtToken;
-	  }
-	  return token;
-  },
+   jwtFromRequest: function jwtTokenExtractor(req) {
+      var token = null;
+
+      if (req && req.cookies && req.cookies.jwtToken) {
+         token = req.cookies.jwtToken;
+      } else if (req && req.param('jwtToken')) {
+         token = req.param('jwtToken');
+      } else if (req && req.headers.authorization) {
+         var authValue = req.headers.authorization;
+         if (authValue.includes('Bearer')) {
+            var value = authValue.split('Bearer')[1];
+            if (value) token = value.trim();
+         } else if (authValue.includes('JWT')) {
+            var value = authValue.split('JWT')[1];
+            if (value) token = value.trim();
+         }
+      }
+
+      if (!token) sails.log.info('A null token was used in session auth.');
+      return token;
+   },
 };
 
 var facebookStrategyConfig = {
@@ -74,19 +88,19 @@ var facebookAuthHandler = function(accessToken, refreshToken, profile, done) {
 };
 
 function jwtAuthHandler(payload, done) {
-	Player.findOne({uuid: payload.user.uuid}).exec(function(err, player) {
-		if (err) {
-			return done(err, false);
-		}
+   Player.findOne({uuid: payload.user.uuid}).exec(function(err, player) {
+      if (err) {
+         return done(err, false);
+      }
 
-		if (!player) {
-			var error = new Error('User does not exist.', 'passport.js');
-			error.name = 'E_USER_NOT_FOUND'
-			return done(null, false, { message: error });
-		}
+      if (!player) {
+         var error = new Error('User does not exist.', 'passport.js');
+         error.name = 'E_USER_NOT_FOUND'
+         return done(null, false, { message: error });
+      }
 
-		return done(null, player);
-	});
+      return done(null, player);
+   });
 }
 
 passport.use(new FacebookStrategy(facebookStrategyConfig, facebookAuthHandler));

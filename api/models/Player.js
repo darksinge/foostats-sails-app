@@ -35,7 +35,8 @@ module.exports = {
 		lastName: 'string',
 		teams: {
 			collection: 'team',
-			via: 'players'
+			via: 'players',
+			dominant: true
 		},
 		achievements: {
 			collection: 'achievement',

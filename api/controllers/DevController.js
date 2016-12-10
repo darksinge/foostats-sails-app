@@ -5,42 +5,48 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
 
+'use strict';
+
 var _ = require('lodash');
 
 module.exports = {
 	test: function(req, res) {
-		Team.findOne({name: 'Team 1'}).exec(function(err, team) {
+		Team.find().populate('players').exec(function(err, teams) {
 			if (err) return res.json({
-				success: false,
 				error: err
 			});
 
-			Player.find().exec(function(err, users) {
-
-				_.forEach(users, function(user) {
-					if (user.role == 'basic') {
-						user.role = 'player';
-						user.save(function(err) {
-							if (err) sails.log.error(err);
-							else sails.log.info('User updated role: ' + user.toJSON().name);
-						});
-					}
+			_.forEach(teams, function(team) {
+				_.forEach(team.players, function(t_player) {
+					Player.findOne({uuid: t_player.uuid}).exec(function(err, player) {
+						if (err) {
+							return sails.log.error('Error looking up player: ERROR:  ', err);
+						} else if (!player) {
+							return sails.log.error('Player update failed, could not find player.');
+						} else {
+							sails.log.info('Adding team to player: ' + player.firstName + ', ' + team.name);
+							player.teams.add(team.name);
+							player.save(function(err) {
+								if (err) {
+									// sails.log.error('Error saving team to player: ERROR:  ', err);
+									console.log(JSON.stringify(err, null, 2));
+								}
+								else sails.log.info('Player team saved.');
+							});
+						}
+					});
 				});
-				return res.json({
-					success: true,
-					users: users,
-					team: team
-				});
-				// if (users[0]) team.players.add(users[0].uuid);
-				// if (users[1]) team.players.add(users[1].uuid);
-				// team.save(function(err) {
-				// 	if (err) return res.json({error: err});
-				// 	return res.json({
-				// 		success: true,
-				// 		team: team
-				// 	});
-				// });
 			});
+
+			return res.json({
+				teams: teams
+			});
+
+			// _.forEach(teams, function(team) {
+			// 	var players = team['players'];
+			// 	sails.log.info(JSON.stringify(teams, null, 2));
+			// });
+
 		});
 	},
 };

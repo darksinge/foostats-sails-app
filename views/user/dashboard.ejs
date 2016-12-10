@@ -22,12 +22,44 @@
 }
 </style>
 
+{% if (typeof message != 'undefined' || typeof error != 'undefined') { %}
+<div class="mdl-grid">
+	{% if(typeof message != 'undefined') { %}
+   <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
+      <div class="mdl-card__title">
+         MESSAGES
+      </div>
+      <div class="mdl-card__supporting-text">
+         <p class="text-info">{%- message %}</p>
+      </div>
+   </div>
+	{% } %}
+	{% if(typeof error != 'undefined') { %}
+   <div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp mdl-card">
+      <div class="mdl-card__title">
+         ERRORS
+      </div>
+      <div class="mdl-card__supporting-text">
+         <p>Error: <span class="text-danger">{%- error %}</span></p>
+      </div>
+   </div>
+	{% } %}
+</div>
+{% } %}
+
 <div class="mdl-grid">
 	<div class="mdl-cell mdl-cell--12-col">
 		<h5>{%= user.firstName %}'s Dashboard</h5>
 	</div>
 </div>
 <div class="mdl-grid">
+	{% if (user.role == 'admin') { %}
+	<div class="mdl-cell mdl-cell--12-col">
+		<a href="/dev/test">
+			<button class="mdl-button mdl-button--raised mdl-button--accent">Dev Test</button>
+		</a>
+	</div>
+	{% } %}
 	<div class="mdl-cell mdl-cell--12-col mdl-shadow--2dp padding">
 		{% if (user.username) { %}
 		<p><strong>Username</strong> {%= user.username %}</p>
@@ -46,41 +78,43 @@
 </div>
 
 <div class="mdl-grid">
+	{% if (user.teams) { %}
 	<div class="mdl-cell mdl-cell--12-col">
-		{% if (user.teams) { %}
 		<h5>You do not belong to any teams.</h5>
-		{% } else { %}
-		<h5>You do not belong to any teams.</h5>
-		{% } %}
 	</div>
-
-
-
-
-
-
+	{% } %}
 	<div class="mdl-cell mdl-cell--8-col mdl-shadow--2dp">
-		<button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" name="findTeams">Find Players +</button>
+		{% if (user.teams) { %}
+		{% _.forEach(user.teams, function(team) { %}
+			<div class="mdl-cell mdl-shadow--2dp padding">
+				<p>{%= team.name %}</p>
+				<p>Player 1: {%= team.players[0].firstName + ' ' + team.players[0].lastName %}</p>
+				<p>Player 2: {%= team.players[1].firstName + ' ' + team.players[1].lastName %}</p>
+			</div>
+		{% }); %}
+		{% }else{ %}
+			<p class="padding">Your teams will be listed here.</p>
+		{% } %}
 	</div>
 	<div class="mdl-cell mdl-cell--4-col mdl-shadow--2dp" id="connection-cards">
 		<h6 class="text-center">Connections</h6>
-
 		{% if (typeof players != 'undefined') { %}
-			{% _.forEach(players, function(value, key) { %}
-			<div class="player-connection-card mdl-card mdl-shadow--2dp" id="connection-card">
-				<div class="mdl-card__title mdl-card--expand">
-					<div class="mdl-card__title-text">
-						<h1 id="connection-name">{%= value.firstName + ' ' + value.lastName %}</h1>
+			{% _.forEach(players, function(player, key) { %}
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+					<div class="mdl-card__supporting-text">
+						<h5 id="connection-name">{%= player.firstName + ' ' + player.lastName %}</h5>
 					</div>
-				</div>
-				<div class="mdl-card__media">
-					<img src="/images/image-placeholder.png" id="connection-image">
-				</div>
-				<div class="mdl-card__supporting-text">
-
-				</div>
-				<div class="mdl-card__actions mdl-card--border">
-					<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="connection-add" value="connection-uuid">Add To Team +</button>
+					<div class="mdl-card__actions mdl-card--border">
+						<form action="/dashboard/addteam" method="post">
+							<input type="text" name="connectionId" value="{%= player.uuid %}" hidden>
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<input class="mdl-textfield__input" type="text" name="teamName" value="">
+								<label class="mdl-textfield__label" for="sample3">Team name...</label>
+							</div>
+							<input type="submit" class="mdl-button mdl-button--accent mdl-button--raised" value="Create New Team +">
+						</form>
+					</div>
 				</div>
 			</div>
 			<br>

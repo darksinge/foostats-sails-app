@@ -12,8 +12,8 @@ module.exports = {
    attributes: {
       uuid: {
          type: 'string',
-         primaryKey: true,
          uuid: true,
+         primaryKey: true,
          required: true,
          unique: true,
          defaultsTo: function(){
@@ -32,13 +32,15 @@ module.exports = {
       },
       players: {
          collection: 'player',
-         via: 'teams',
-         dominant: true
+         via: 'teams'
       },
       leagues: {
          collection: 'league',
          via: 'teams'
       },
+      toJSON: function() {
+         return this.toObject();
+      }
    },
 
    beforeCreate: function(values, done) {

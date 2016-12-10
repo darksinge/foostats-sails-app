@@ -63,6 +63,7 @@ module.exports.routes = {
    // User routes
    'GET /dashboard': 'UserController.dashboard',
    'POST /dashboard/addconnection': 'UserController.addConnection',
+   'POST /dashboard/addteam': 'UserController.addTeam',
 
    // REST API Routes
    'PUT /players': 'PlayerController.update',

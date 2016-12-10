@@ -9,27 +9,62 @@ var _ = require('lodash');
 module.exports = {
 
 	dashboard: function(req, res) {
-		Player.find().exec(function(err, users) {
-			if (err) return res.serverError(err);
-			if (!users) {
-				return res.serverError('Oops! Something went wrong.');
-			}
+      var fooError;
+      var fooMessage;
+      if (req.cookies.fooError) fooError = req.cookies.fooError;
+      if (req.cookies.fooMessage) fooMessage = req.cookies.fooMessage;
 
-			for (var i = 0; i < users.length; i++) {
-				if (users[i].uuid === req.user.uuid) {
-					res.locals.user = users[i].toJSON();
-					users[i] = 'delete';
-				}
-			}
+      res.clearCookie('fooError');
+      res.clearCookie('fooMessage');
 
-			while (users.indexOf('delete') !== -1) {
-				users.splice(users.indexOf('delete'), 1);
-			}
+      Player.findOne({uuid: req.user.uuid}).populate('teams').exec(function(err, user) {
+         if (err) {
+            res.cookie('fooError', JSON.stringify(err, null, 2));
+            return res.redirect('/dashboard');
+         }
 
-			return res.view('user/dashboard', {
-				players: users
-			});
-		});
+         if (!user) {
+            res.cookie('fooError', 'There was an error, please contact a system administrator.');
+            return res.redirect('/login');
+         }
+
+         var query = [];
+         _.forEach(user.teams, function(team) {
+            query.push(team.uuid);
+         });
+         Team.find(query).populate('players').exec(function(err, teams) {
+            if (err) res.serverError(err);
+            if (!teams) teams = [];
+
+            user = user.toJSON();
+            user.teams = teams;
+            res.locals.user = user;
+
+            Player.find().exec(function(err, users) {
+      			if (err) return res.serverError(err);
+      			if (!users) {
+      				return res.serverError('Oops! Something went wrong.');
+      			}
+
+      			for (var i = 0; i < users.length; i++) {
+      				if (users[i].uuid === user.uuid) {
+      					users[i] = 'delete';
+                     break;
+      				}
+      			}
+
+      			while (users.indexOf('delete') !== -1) {
+      				users.splice(users.indexOf('delete'), 1);
+      			}
+
+      			return res.view('user/dashboard', {
+      				players: users,
+                  error: fooError,
+                  message: fooMessage
+      			});
+      		});
+         });
+      })
 	},
 
 	addConnection: function(res, res) {
@@ -65,5 +100,49 @@ module.exports = {
 		});
 
 	},
+
+   addTeam: function(req, res) {
+      var connectionId = req.param('connectionId');
+      var teamName = req.param('teamName');
+
+      if (!connectionId || !teamName) {
+         res.cookie('fooError', 'You must provide a team name to create a team');
+         return res.redirect('/dashboard');
+      }
+
+      Player.findOne({uuid: req.user.uuid}).exec(function(err, player1) {
+         if (err) {
+            res.cookie('fooError', err.message);
+            return res.redirect('/dashboard');
+         }
+
+         if (!player1) return res.serverError(new Error('Player not found!'));
+
+         Player.findOne({uuid: connectionId}).exec(function(err, player2) {
+            if (err) {
+               res.cookie('fooError', err.message);
+               return res.redirect('/dashboard');
+            }
+
+            if (!player2) return res.serverError(new Error('Player not found!'));
+
+            Team.create({name: teamName}).exec(function(err, team) {
+               if (err) {
+                  res.cookie('fooError', err.message);
+                  return res.redirect('/dashboard');
+               }
+
+               team.players.add(player1.uuid);
+               team.players.add(player2.uuid);
+               team.save(function(err) {
+                  if (err) {
+                     res.cookie('fooError', err.message);
+                  }
+                  return res.redirect('/dashboard');
+               });
+            });
+         });
+      });
+   },
 
 }
