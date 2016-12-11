@@ -6,6 +6,7 @@
 */
 
 var uuid = require('node-uuid');
+var _ = require('lodash');
 
 module.exports = {
 
@@ -62,6 +63,20 @@ module.exports = {
          if (err) return done(err);
          if (!team) return done(new Error('Update failed, team not found.'));
          return done(null, team);
+      });
+   },
+
+   prune: function() {
+      Team.find().populate('players').exec(function(err, teams) {
+         if (err) return sails.log.error(err);
+         _.forEach(teams, function(team) {
+            if (team.players.length === 0) {
+               Team.destroy({uuid: team.uuid}).exec(function(err) {
+                  if (err) return sails.log.error(err);
+                  else return sails.log.info('Team deleted.');
+               });
+            }
+         });
       });
    },
 

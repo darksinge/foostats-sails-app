@@ -247,5 +247,35 @@ module.exports = {
 		});
 	},
 
+   deleteTeams: function(res, res) {
+      Team.find().exec(function(err, teams) {
+         if (err) {
+            res.cookie('fooError', err);
+            return res.redirect('/admin');
+         }
+
+         if (teams.length > 0) {
+            console.log('# of teams:  ' + teams.length);
+            for (var i = 0; i < teams.length; i++) {
+               console.log(i);
+               Team.destroy({uuid: teams[i].uuid}).exec(function(err) {
+                  if (err) {
+                     res.cookie('fooError', err);
+                     return res.redirect('/admin');
+                  }
+               });
+               if (i == teams.length - 1) {
+                  res.cookie('fooMessage', 'Successfully deleted all teams.');
+                  return res.redirect('/admin');
+               }
+            }
+         } else {
+            res.cookie('fooMessage', 'Number of teams is already 0.');
+            return res.redirect('/admin');
+         }
+
+
+      });
+   }
 
 }

@@ -88,8 +88,16 @@
 		{% _.forEach(user.teams, function(team) { %}
 			<div class="mdl-cell mdl-shadow--2dp padding">
 				<p>{%= team.name %}</p>
+				{% if (team.players[0]) { %}
 				<p>Player 1: {%= team.players[0].firstName + ' ' + team.players[0].lastName %}</p>
+				{% } %}
+				{% if (team.players[1]) { %}
 				<p>Player 2: {%= team.players[1].firstName + ' ' + team.players[1].lastName %}</p>
+				{% } %}
+				<form class="" action="/dashboard/teams/leave" method="post">
+					<input type="text" name="teamId" value="{%= team.uuid %}" hidden>
+					<input type="submit" class="mdl-button mdl-button--raised" value="Leave Team">
+				</form>
 			</div>
 		{% }); %}
 		{% }else{ %}
@@ -106,7 +114,7 @@
 						<h5 id="connection-name">{%= player.firstName + ' ' + player.lastName %}</h5>
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
-						<form action="/dashboard/addteam" method="post">
+						<form action="/dashboard/teams/add" method="post">
 							<input type="text" name="connectionId" value="{%= player.uuid %}" hidden>
 							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 								<input class="mdl-textfield__input" type="text" name="teamName" value="">

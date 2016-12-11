@@ -17,35 +17,12 @@ module.exports = {
 			});
 
 			_.forEach(teams, function(team) {
-				_.forEach(team.players, function(t_player) {
-					Player.findOne({uuid: t_player.uuid}).exec(function(err, player) {
-						if (err) {
-							return sails.log.error('Error looking up player: ERROR:  ', err);
-						} else if (!player) {
-							return sails.log.error('Player update failed, could not find player.');
-						} else {
-							sails.log.info('Adding team to player: ' + player.firstName + ', ' + team.name);
-							player.teams.add(team.name);
-							player.save(function(err) {
-								if (err) {
-									// sails.log.error('Error saving team to player: ERROR:  ', err);
-									console.log(JSON.stringify(err, null, 2));
-								}
-								else sails.log.info('Player team saved.');
-							});
-						}
-					});
-				});
+				console.log(team.players.length);
 			});
 
 			return res.json({
 				teams: teams
 			});
-
-			// _.forEach(teams, function(team) {
-			// 	var players = team['players'];
-			// 	sails.log.info(JSON.stringify(teams, null, 2));
-			// });
 
 		});
 	},

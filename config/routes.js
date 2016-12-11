@@ -59,11 +59,13 @@ module.exports.routes = {
    'GET /admin/create/player': 'AdminController.adminCreateView',
    'POST /admin/delete/player': 'AdminController.adminDelete',
 	'GET /admin/createdummies': 'AdminController.createDummies',
+   'GET /admin/delete/teams': 'AdminController.deleteTeams',
 
    // User routes
    'GET /dashboard': 'UserController.dashboard',
    'POST /dashboard/addconnection': 'UserController.addConnection',
-   'POST /dashboard/addteam': 'UserController.addTeam',
+   'POST /dashboard/teams/add': 'UserController.addTeam',
+   'POST /dashboard/teams/leave': 'UserController.leaveTeam',
 
    // REST API Routes
    'PUT /players': 'PlayerController.update',

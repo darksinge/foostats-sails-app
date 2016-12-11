@@ -5,10 +5,18 @@
 */
 
 var _ = require('lodash');
+var request = require('request');
+
+function undoTeamCreate(team) {
+   Team.destroy({uuid: team.uuid}).exec(function(err) {
+      if (err) sails.log.error(err);
+      else sails.log.info('encountered an error, team deleted.');
+   });
+}
 
 module.exports = {
 
-	dashboard: function(req, res) {
+   dashboard: function(req, res) {
       var fooError;
       var fooMessage;
       if (req.cookies.fooError) fooError = req.cookies.fooError;
@@ -41,108 +49,152 @@ module.exports = {
             res.locals.user = user;
 
             Player.find().exec(function(err, users) {
-      			if (err) return res.serverError(err);
-      			if (!users) {
-      				return res.serverError('Oops! Something went wrong.');
-      			}
+               if (err) return res.serverError(err);
+               if (!users) {
+                  return res.serverError('Oops! Something went wrong.');
+               }
 
-      			for (var i = 0; i < users.length; i++) {
-      				if (users[i].uuid === user.uuid) {
-      					users[i] = 'delete';
+               for (var i = 0; i < users.length; i++) {
+                  if (users[i].uuid === user.uuid) {
+                     users[i] = 'delete';
                      break;
-      				}
-      			}
+                  }
+               }
 
-      			while (users.indexOf('delete') !== -1) {
-      				users.splice(users.indexOf('delete'), 1);
-      			}
+               while (users.indexOf('delete') !== -1) {
+                  users.splice(users.indexOf('delete'), 1);
+               }
 
-      			return res.view('user/dashboard', {
-      				players: users,
+               return res.view('user/dashboard', {
+                  players: users,
                   error: fooError,
                   message: fooMessage
-      			});
-      		});
+               });
+            });
          });
       })
-	},
+   },
 
-	addConnection: function(res, res) {
-		var connection = req.param('connection');
-		if (!connection) {
-			res.cookie('fooError', 'missing parameter \'connection\', which is the uuid of the player you are trying to add as a connection');
-			return res.redirect('/dashboard');
-		}
-
-		if (!req.user) {
-			res.cookie('fooMessage', 'You are not logged in, please log in again.');
-			return res.redirect('/login');
-		}
-
-		Player.findOne({uuid: req.user.uuid}).exec(function(err, player) {
-			if (err) {
-				res.cookie('fooError', err.message);
-				return res.redirect('/dashboard');
-			}
-
-			if (!player) {
-				res.cookie('fooError', 'Something went terribly wrong, please try logging out and logging back in again.');
-				return res.redirect('/dashboard');
-			}
-
-			player.connections.add(connection);
-			player.save(function(err) {
-				if (err) {
-					res.cookie('fooError', err.message);
-				}
-				return res.redirect('/dashboard');
-			});
-		});
-
-	},
-
-   addTeam: function(req, res) {
-      var connectionId = req.param('connectionId');
-      var teamName = req.param('teamName');
-
-      if (!connectionId || !teamName) {
-         res.cookie('fooError', 'You must provide a team name to create a team');
+   addConnection: function(res, res) {
+      var connection = req.param('connection');
+      if (!connection) {
+         res.cookie('fooError', 'missing parameter \'connection\', which is the uuid of the player you are trying to add as a connection');
          return res.redirect('/dashboard');
       }
 
-      Player.findOne({uuid: req.user.uuid}).exec(function(err, player1) {
+      if (!req.user) {
+         res.cookie('fooMessage', 'You are not logged in, please log in again.');
+         return res.redirect('/login');
+      }
+
+      Player.findOne({uuid: req.user.uuid}).exec(function(err, player) {
          if (err) {
             res.cookie('fooError', err.message);
             return res.redirect('/dashboard');
          }
 
-         if (!player1) return res.serverError(new Error('Player not found!'));
+         if (!player) {
+            res.cookie('fooError', 'Something went terribly wrong, please try logging out and logging back in again.');
+            return res.redirect('/dashboard');
+         }
 
-         Player.findOne({uuid: connectionId}).exec(function(err, player2) {
+         player.connections.add(connection);
+         player.save(function(err) {
             if (err) {
                res.cookie('fooError', err.message);
+            }
+            return res.redirect('/dashboard');
+         });
+      });
+
+   },
+
+   addTeam: function(req, res) {
+      var connectionId = req.param('connectionId');
+      var requesterId = req.user.uuid;
+      var teamName = req.param('teamName');
+
+      Team.prune();
+
+      if (!teamName) {
+         res.cookie('fooError', 'You must provide a team name!');
+         return res.redirect('/dashboard');
+      }
+
+      Team.create({name: teamName}).exec(function(err, team) {
+         if (err) {
+            var errObj = JSON.parse(JSON.stringify(err));
+            if (errObj.error == 'E_VALIDATION' && errObj.summary == '1 attribute is invalid') {
+               res.cookie('fooError', 'That team name has already been taken, please choose a different name.');
+            } else {
+               res.cookie('fooError', JSON.stringify(err, null, 2));
+            }
+            return res.redirect('/dashboard');
+         }
+
+         var siteUrl = process.env.NODE_ENV === 'production' ? 'https://foostats.herokuapp.com' : 'http://localhost:1337';
+         var urlForPlayer1 = siteUrl + '/team/' + team.uuid.trim() + '/players/' + requesterId.trim();
+         var urlForPlayer2 = siteUrl + '/team/' + team.uuid.trim() + '/players/' + connectionId.trim();
+
+         var options = {
+            url: urlForPlayer1,
+            headers: {
+               'Authorization': 'Bearer ' + req.cookies.jwtToken
+            }
+         }
+
+         request.post(options, function(err, response, body){
+            if (err) {
+               sails.log.error(err);
+               undoTeamCreate(team.uuid);
+               res.cookie('fooError', JSON.stringify(err, null, 2));
                return res.redirect('/dashboard');
             }
-
-            if (!player2) return res.serverError(new Error('Player not found!'));
-
-            Team.create({name: teamName}).exec(function(err, team) {
+            options.url = urlForPlayer2;
+            request.post(options, function(err, response, body){
                if (err) {
-                  res.cookie('fooError', err.message);
+                  sails.log.error(err);
+                  undoTeamCreate(team.uuid);
+                  res.cookie('fooError', err);
                   return res.redirect('/dashboard');
                }
 
-               team.players.add(player1.uuid);
-               team.players.add(player2.uuid);
-               team.save(function(err) {
-                  if (err) {
-                     res.cookie('fooError', err.message);
-                  }
-                  return res.redirect('/dashboard');
-               });
+               return res.redirect('/dashboard');
             });
          });
       });
    },
+
+   leaveTeam: function(req, res) {
+
+      var userId = req.user.uuid;
+      var teamId = req.param('teamId');
+
+      if (!teamId) {
+         res.cookie('fooError', 'Team ID was not provided');
+         res.redirect('/dashboard');
+      }
+
+      var siteUrl = process.env.NODE_ENV === 'production' ? 'https://foostats.herokuapp.com' : 'http://localhost:1337';
+      var url = siteUrl + '/team/' + teamId + '/players/' + userId;
+
+      var options = {
+         url: url,
+         headers: {
+            'Authorization': 'Bearer ' + req.cookies.jwtToken
+         }
+      }
+
+      request.del(options, function(err, response, body){
+         if (err) {
+            sails.log.error(err);
+            undoTeamCreate(team.uuid);
+            res.cookie('fooError', JSON.stringify(err, null, 2));
+            return res.redirect('/dashboard');
+         }
+         Team.prune();
+         return res.redirect('/dashboard');
+      });
+   }
 
 }
