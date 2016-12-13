@@ -67,11 +67,12 @@ module.exports = {
                try {
                   var token = createToken(user);
                   res.cookie('jwtToken', token);
-                  return res.redirect('/dashboard');
                } catch(e) {
-                  throw e;
+                  sails.log.error(e);
+                  res.cookie('fooError', e.message);
                }
-
+               
+               return res.redirect('/dashboard');
             });
          } catch(e) {
             sails.log.error(e);
@@ -83,24 +84,23 @@ module.exports = {
       })(req, res);
    },
 
-
-
    verifyUserAuth: function(req, res) {
       FacebookService.verifyAccessToken(req.param["access_token"])
       .then(function(player) {
+
+         var error = null;
+
+         try {
+            player = player.toJSON();
+         } catch (e) {
+            sails.log.error(e);
+            error = e;
+         }
+
          return res.json({
             success: true,
-            player: {
-               uuid: player.uuid,
-               email: player.email,
-               firstName: player.firstName,
-               lastName: player.lastName,
-               teams: player.teams,
-               achievements: player.achievements,
-               role: player.role,
-               facebookId: player.facebookId,
-               facebookToken: player.facebookToken,
-            }
+            player: player,
+            error: error
          });
       })
       .catch(function(err) {

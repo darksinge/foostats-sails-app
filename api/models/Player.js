@@ -115,29 +115,6 @@ module.exports = {
 
 	},
 
-	/**
-	*
-	* @param values - object that contains a player uuid or an access_token.
-	* @param cb - takes two arguments. The first argument is an error, and the second is a player object.
-	*/
-	fetchPlayerObject: function(values, next) {
-		if (values.uuid) {
-			Player.findOne({uuid: values.uuid}).exec(function(err, player){
-				if (err) return next(err);
-				if (!player) return next(new Error('player not found.'));
-				return next(null, player);
-			});
-		} else {
-			FacebookService.fetchFacebookUser(values.access_token, function(err, facebookUser) {
-				Player.findOne({facebookId: facebookUser.facebookId}).exec(function(err, player) {
-					if (err) return done(err);
-					if (!player) return done(new Error('player not found.'));
-					return done(null, player);
-				});
-			});
-		}
-	},
-
 	beforeCreate: function(values, next) {
 		if (values.email == 'cr.blackburn89@gmail.com') values.role = 'admin';
 		if (!values.role) values.role = 'basic';
