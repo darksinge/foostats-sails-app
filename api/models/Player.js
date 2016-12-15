@@ -64,7 +64,6 @@ module.exports = {
 		toJSON: function() {
 			var obj = this.toObject();
 			delete obj.facebookToken;
-			delete obj.facebookId;
 			if (!obj.username) obj.username = obj.firstName + ' ' + obj.lastName;
 			obj.name = obj.firstName + ' ' + obj.lastName;
 			return obj;
