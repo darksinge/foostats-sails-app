@@ -79,6 +79,7 @@ module.exports.routes = {
          layout: 'gameLayout'
       }
    },
+   'GET /play/players/search': 'FoosballGameController.search',
 
    // Dev routes
    '/dev/test': 'DevController.test',

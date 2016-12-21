@@ -1,3 +1,36 @@
-<md-content layout="row" layout-align="space-around stretch">
-   <md-button class="" ng-click="vm.startGame()">Start Game</md-button>
+<style media="screen">
+   .blue-team {
+      border: solid blue;
+      border-width: 3px;
+   }
+   .red-team {
+      border: solid red;
+      border-width: 3px;
+   }
+</style>
+
+<md-content layout="row" class="md-padding" layout-align="space-around stretch">
+   Blue Team
+   <div layout class="blue-team md-padding">
+      <md-button class="md-button md-raised" ng-repeat="player in vm.getBlueTeam()" ng-click="vm.removePlayer(player)">{{player.name}}</md-button>
+   </div>
+   <br>
+   Red Team
+   <div layout class="red-team md-padding">
+      <md-button class="md-button md-raised" ng-repeat="player in vm.getRedTeam()" ng-click="vm.removePlayer(player)">{{player.name}}</md-button>
+   </div>
+   <br>
+   <input class="form-control field span12" ng-model="vm.query" ng-change="vm.search()" ng-disabled="vm.isReady" />
+
+   <div class="md-padding" layout="column">
+      <md-list class="fixedRows">
+         <md-list-item class="md-2-line" ng-repeat="player in vm.players" ng-click="vm.addPlayer(player)">
+            <div class="md-list-item-text compact">
+               <h3>{{player.name}}</h3>
+               <p>{{player.email}}</p>
+            </div>
+         </md-list-item>
+      </md-list>
+   </div>
+   <md-button class="md-raised" ng-click="vm.startGame()" ng-disabled="!vm.isReady">Start Game</md-button>
 </md-content>

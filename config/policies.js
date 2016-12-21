@@ -67,12 +67,12 @@ module.exports.policies = {
       '*': ['sessionAuth', 'isAdmin', 'addLocals']
    },
 
-   CertbotController: {
-      '*': true
-   },
+   // CertbotController: {
+   //    '*': true
+   // },
 
    FoosballGameController: {
-      '*': ['sessionAuth', 'addLocals']
+      '*': ['sessionAuth']
    }
 
    /***************************************************************************
