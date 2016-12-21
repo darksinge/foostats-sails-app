@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="gameApp">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+   <meta name="description" content="foostats.com, web version of game interface.">
+
+   <!-- Latest compiled and minified bootstrap CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+   <link rel="stylesheet" href="/styles/master.css">
+   <base href="/">
+
+</head>
+
+<body cz-shortcut-listen="true" layout="column" ng-controller="GameController as vm" ng-cloak>
+
+   <md-content>
+      <md-toolbar class="md-hue-2">
+         <div class="md-toolbar-tools">
+            <md-button class="md-button" aria-label="Home" ng-click="vm.go('/')">
+               Foostats.com
+            </md-button>
+            <span flex></span>
+            <md-button class="md-button md-raised md-accent" aria-label="Settings" ng-click="vm.go('/dashboard')">
+               Dashboard
+            </md-button>
+            <md-button class="md-button md-raised md-accent" aria-label="Game" ng-click="vm.go('/logout')">
+               Logout
+            </md-button>
+         </div>
+      </md-toolbar>
+   </md-content>
+
+
+   <div ng-view></div>
+
+
+   <!-- JQuery -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+   <!-- Latest compiled and minified bootstrap JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+   <!-- Angularjs -->
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+   <!-- angular dependencies -->
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.7/angular-material.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js"></script>
+   <!-- <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.min.js"></script> -->
+   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-cookie/4.1.0/angular-cookie.min.js"></script> -->
+   <script src="/angular/js/app.js"></script>
+   <script src="/angular/js/GameController.js"></script>
+
+</body>
+
+
+
+
+
+</html>

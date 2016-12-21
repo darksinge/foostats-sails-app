@@ -71,6 +71,15 @@ module.exports.routes = {
    'PUT /players': 'PlayerController.update',
    'GET /player/:id': 'PlayerController.findOne',
 
+   // Game routes
+   '/play': {
+      controller: 'FoosballGameController',
+      view: 'user/game',
+      locals: {
+         layout: 'gameLayout'
+      }
+   },
+
    // Dev routes
    '/dev/test': 'DevController.test',
 

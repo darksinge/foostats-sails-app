@@ -13,7 +13,7 @@
  * api/blueprints folder and  add files to it with names matching the actions to
  * override (e.g. find.js, findone.js, create.js, etc.). You can take a look at
  * the code for the default actions in the Sails blueprints hook for a head
- * start. 
+ * start.
  */
 
 module.exports = {

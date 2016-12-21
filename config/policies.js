@@ -71,6 +71,9 @@ module.exports.policies = {
       '*': true
    },
 
+   FoosballGameController: {
+      '*': ['sessionAuth', 'addLocals']
+   }
 
    /***************************************************************************
    *                                                                          *

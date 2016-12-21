@@ -29,7 +29,6 @@ var jwtStrategyConfig = {
          }
       }
 
-      if (!token) sails.log.info('A null token was used in session auth.');
       return token;
    },
 };
