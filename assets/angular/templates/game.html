@@ -1,40 +1,94 @@
-<!-- <div layout="column">
-   <h2>Blue Team</h2>
-   <h4>player 1</h4>
-   <div layout="row" class="md-padding">
-      <div flex style="background-color: blue; height: 100px; width: 100px; color: white;">
-         <h1>+</h1>
+<style media="screen">
+   .blue-button {
+      min-height: 100px;
+      min-width: 100px;
+      background-color: blue !important;
+      color: white;
+      margin-right: 5px;
+   }
+   .red-button {
+      min-height: 100px;
+      min-width: 100px;
+      background-color: red !important;
+      color: white;
+      margin-right: 5px;
+   }
+   .blue-team {
+      height: 50%;
+   }
+   .red-team {
+      height: 50%;
+   }
+   team-header {
+      margin: 3px;
+      padding: 0;
+      font-size: 14px;
+   }
+   .md-subheader .md-subheader-inner {
+      margin: 8px 0 0 32px !important;
+      padding: 0 0 0 0!important;
+   }
+</style>
+
+<div class="layout-fill" layout="column" layout-padding>
+   <div class="blue-team">
+      <div layout>
+         <div flex>
+            <team-header flex class="md-no-sticky">Blue Team Score: <span ng-bind="vm.blueTeamScore"></span></team-header>
+         </div>
+         <div flex>
+            <team-header flex class="md-no-sticky">Red Team Score: <span ng-bind="vm.redTeamScore"></span></team-header>
+         </div>
       </div>
-      <div flex style="background-color: blue; height: 100px; width: 100px; color: white;">
-         <h1>-</h1>
+      <div layout>
+         <md-subheader flex class="header md-no-sticky"> {{vm.getPlayer(1).name}}</md-subheader>
+         <md-subheader flex class="header md-no-sticky">Points: {{vm.player1Score}}</md-subheader>
+      </div>
+      <div layout layout-align="space-around center">
+         <md-button class="blue-button" ng-click="vm.addPoint(1)" ng-disabled="vm.buttonsDisabled">
+            <h1>+</h1>
+         </md-button>
+         <md-button class="blue-button" ng-click="vm.minusPoint(1)" ng-disabled="vm.buttonsDisabled">
+            <h1>-</h1>
+         </md-button>
+      </div>
+      <div layout>
+         <md-subheader flex class="header md-no-sticky"> {{vm.getPlayer(2).name}}</md-subheader>
+         <md-subheader flex class="header md-no-sticky">Points: {{vm.player2Score}}</md-subheader>
+      </div>
+      <div layout layout-align="space-around center">
+         <md-button class="blue-button" ng-click="vm.addPoint(2)" ng-disabled="vm.buttonsDisabled">
+            <h1>+</h1>
+         </md-button>
+         <md-button class="blue-button" ng-click="vm.minusPoint(2)" ng-disabled="vm.buttonsDisabled">
+            <h1>-</h1>
+         </md-button>
       </div>
    </div>
-   <h4>player 2</h4>
-   <div layout class="md-padding">
-      <div flex style="background-color: blue; height: 100px; width: 100px; color: white;">
-         <h1>+</h1>
+   <div class="red-team">
+      <div layout>
+         <md-subheader flex class="header md-no-sticky"> {{vm.getPlayer(3).name}}</md-subheader>
+         <md-subheader flex class="header md-no-sticky">Points: {{vm.player3Score}}</md-subheader>
       </div>
-      <div flex style="background-color: blue; height: 100px; width: 100px; color: white;">
-         <h1>-</h1>
+      <div layout layout-align="space-around center">
+         <md-button class="red-button" ng-click="vm.addPoint(3)" ng-disabled="vm.buttonsDisabled">
+            <h1>+</h1>
+         </md-button>
+         <md-button class="red-button" ng-click="vm.minusPoint(3)" ng-disabled="vm.buttonsDisabled">
+            <h1>-</h1>
+         </md-button>
       </div>
-   </div>
-   <hr>
-   <h2>Red Team</h2>
-   <div layout="row" class="md-padding">
-      <div flex style="background-color: red; height: 100px; width: 100px; color: white;">
-         <h1>+</h1>
+      <div layout>
+         <md-subheader flex class="header md-no-sticky"> {{vm.getPlayer(4).name}}</md-subheader>
+         <md-subheader flex class="header md-no-sticky">Points: {{vm.player4Score}}</md-subheader>
       </div>
-      <div flex style="background-color: red; height: 100px; width: 100px; color: white;">
-         <h1>-</h1>
-      </div>
-   </div>
-   <h4>player 2</h4>
-   <div layout class="md-padding">
-      <div style="background-color: red; height: 100px; width: 100px; color: white;">
-         <h1>+</h1>
-      </div>
-      <div style="background-color: red; height: 100px; width: 100px; color: white;">
-         <h1>-</h1>
+      <div layout layout-align="space-around center">
+         <md-button class="red-button" ng-click="vm.addPoint(4)" ng-disabled="vm.buttonsDisabled">
+            <h1>+</h1>
+         </md-button>
+         <md-button class="red-button" ng-click="vm.minusPoint(4)" ng-disabled="vm.buttonsDisabled">
+            <h1>-</h1>
+         </md-button>
       </div>
    </div>
-</div> -->
+</div>

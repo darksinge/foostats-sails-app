@@ -1,26 +1,35 @@
 <style media="screen">
    .blue-team {
       border: solid blue;
-      border-width: 3px;
+      border-width: 2px;
+      border-radius: 3px;
    }
    .red-team {
       border: solid red;
-      border-width: 3px;
+      border-width: 2px;
+      border-radius: 3px;
    }
 </style>
 
-<md-content layout="row" class="md-padding" layout-align="space-around stretch">
-   Blue Team
+<md-content layout="column" class="md-padding" layout-align="space-around stretch">
+   <md-subheader class="md-no-sticky">Blue Team</md-subheader>
    <div layout class="blue-team md-padding">
       <md-button class="md-button md-raised" ng-repeat="player in vm.getBlueTeam()" ng-click="vm.removePlayer(player)">{{player.name}}</md-button>
    </div>
    <br>
-   Red Team
+   <md-subheader class="md-no-sticky">Red Team</md-subheader>
    <div layout class="red-team md-padding">
       <md-button class="md-button md-raised" ng-repeat="player in vm.getRedTeam()" ng-click="vm.removePlayer(player)">{{player.name}}</md-button>
    </div>
    <br>
-   <input class="form-control field span12" ng-model="vm.query" ng-change="vm.search()" ng-disabled="vm.isReady" />
+   <div flex role="search-bar">
+      <md-input-container class="md-block">
+         <label><i class="fa fa-search" aria-hidden="true"></i></label>
+         <input ng-model="vm.query" ng-change="vm.search()" ng-disabled="vm.isReady" />
+     </md-input-container>
+   </div>
+
+
 
    <div class="md-padding" layout="column">
       <md-list class="fixedRows">
