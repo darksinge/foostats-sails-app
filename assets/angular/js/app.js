@@ -16,6 +16,6 @@
       .otherwise({
          redirectTo: '/play'
       });
-   })
+   });
 
 })();

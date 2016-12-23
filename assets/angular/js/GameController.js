@@ -21,7 +21,7 @@
       vm.canAddPlayers = true;
       vm.buttonsDisabled = false;
       vm.gameDidStart = false;
-      vm.previousPath = '';
+      vm.previousPath = $location.path();
 
       vm.selectedPlayers = [];
 
@@ -36,16 +36,6 @@
       $scope.openLeftMenu = function() {
          $mdSidenav('left').toggle();
       };
-
-      $scope.$on("$locationChangeStart", function(event) {
-         if (vm.previousPath == '/play/game') {
-            if (!confirm('You have unsaved changes that will be lost, go back?')) {
-               event.preventDefault();
-            }
-         }
-         console.log('previous path: ' + vm.previousPath);
-         vm.previousPath = $location.path();
-      });
 
       vm.addPoint = function(playerPosition) {
          switch (playerPosition) {
@@ -128,7 +118,8 @@
 
          $mdDialog.show(alert)
          .then(function() {
-            $window.location.href = '/play';
+            $location.path('/play');
+            // $window.location.href = '/play';
          });
 
       };
@@ -181,29 +172,22 @@
          return players;
       }
 
-      vm.findMe = function() {
-         $http.get('https://baconipsum.com/api/?type=meat-and-filler')
-         .then(function(data) {
-            console.log('', data.data);
-         });
-      }
-
       vm.go = function(path) {
          $window.location.href = path;
       }
 
-      function changeView(view) {
+      vm.changeView = function(view) {
          $location.path(view);
       }
 
       vm.newGame = function() {
-         changeView('/play/game/setup');
+         vm.changeView('/play/game/setup');
       }
 
       vm.startGame = function() {
          vm.gameDidStart = true;
          vm.gameStartTime = new Date();
-         changeView('/play/game');
+         vm.changeView('/play/game');
          vm.player1 = vm.getBlueTeam()[0];
          vm.player2 = vm.getBlueTeam()[1];
          vm.player3 = vm.getRedTeam()[0];
@@ -241,8 +225,19 @@
          $http.get('/play/players/search?keywords=' + vm.query)
          .then(function(data) {
             var players = data.data.players;
+
+            // for (var i = 0; i < vm.selectedPlayers.length; i++) {
+            //    console.log('jdklsfjdks');
+            //    var player = vm.selectedPlayers[i];
+            //    for (var n = 0; n < players.length; i++) {
+            //       console.log('player: ', players[n]);
+            //    }
+            // }
+
             vm.players = players;
+            console.log('selected players total: ' + vm.selectedPlayers.length + '.');
             console.log('found ' + (players.length + 1) + ' players.');
+            console.log('displaying ' + vm.players.length + ' players.');
          })
          .catch(function(err) {
             console.error('', err);

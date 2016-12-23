@@ -30,9 +30,9 @@
                <md-icon><i class="fa fa-user fa-lg" aria-hidden="true"></i></md-icon>
                <p>Dashboard</p>
             </md-list-item>
-            <md-list-item ng-click="null">
+            <md-list-item ng-click="vm.go('/play')">
                <md-icon><i class="fa fa-trophy fa-lg" aria-hidden="true"></i></md-icon>
-               <p>New Game</p>
+               <p>Game Menu</p>
             </md-list-item>
             <md-list-item ng-click="vm.go('/logout')">
                <md-icon><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i></md-icon>
@@ -50,7 +50,7 @@
             </md-button>
          </div>
       </md-toolbar>
-      <div ng-view></div>
+      <span ng-view></span>
    </div>
 
 
