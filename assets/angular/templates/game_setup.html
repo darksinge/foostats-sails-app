@@ -9,37 +9,49 @@
       border-width: 2px;
       border-radius: 3px;
    }
+	.divider-margin {
+		margin: 5px 0 5px 0;
+	}
+	.md-blue-team {
+		background-color: blue !important;
+		color: white !important;
+	}
+	.md-red-team {
+		background-color: red !important;
+		color: white !important;
+	}
 </style>
 
 <md-content layout="column" class="md-padding" layout-align="space-around stretch">
+	<md-button class="md-raised md-accent" ng-click="vm.startGame()" ng-disabled="!vm.gameCanStart">Start Game</md-button>
    <md-subheader class="md-no-sticky">Blue Team</md-subheader>
-   <div layout class="blue-team md-padding">
-      <md-button class="md-button md-raised" ng-repeat="player in vm.getBlueTeam()" ng-click="vm.removePlayer(player)">{{player.name}}</md-button>
+   <div layout>
+		<md-button flex class="md-button md-raised md-blue-team" ng-click="vm.removePlayerByIndex(0)">{{vm.getPlayer(1).name}}</md-button>
+		<md-button flex class="md-button md-raised md-blue-team" ng-click="vm.removePlayerByIndex(1)">{{vm.getPlayer(2).name}}</md-button>
    </div>
-   <br>
+   <md-divider class="divider-margin"></md-divider>
    <md-subheader class="md-no-sticky">Red Team</md-subheader>
-   <div layout class="red-team md-padding">
-      <md-button class="md-button md-raised" ng-repeat="player in vm.getRedTeam()" ng-click="vm.removePlayer(player)">{{player.name}}</md-button>
+	<div layout>
+		<md-button flex class="md-button md-raised md-red-team" ng-click="vm.removePlayerByIndex(2)">{{vm.getPlayer(3).name}}</md-button>
+		<md-button flex class="md-button md-raised md-red-team" ng-click="vm.removePlayerByIndex(3)">{{vm.getPlayer(4).name}}</md-button>
    </div>
-   <br>
-   <div flex role="search-bar">
-      <md-input-container class="md-block">
-         <label><i class="fa fa-search" aria-hidden="true"></i></label>
-         <input ng-model="vm.query" ng-change="vm.search()" ng-disabled="vm.isReady" />
-     </md-input-container>
-   </div>
-
-
-
-   <div class="md-padding" layout="column">
-      <md-list class="fixedRows">
-         <md-list-item class="md-2-line" ng-repeat="player in vm.players" ng-click="vm.addPlayer(player)">
-            <div class="md-list-item-text compact">
-               <h3>{{player.name}}</h3>
-               <p>{{player.email}}</p>
-            </div>
-         </md-list-item>
-      </md-list>
-   </div>
-   <md-button class="md-raised" ng-click="vm.startGame()" ng-disabled="!vm.isReady">Start Game</md-button>
+	<md-divider class="divider-margin"></md-divider>
+	<md-content class="md-whiteframe-1dp">
+		<div flex role="search-bar">
+	      <md-input-container class="md-block">
+	         <label><i class="fa fa-search" aria-hidden="true"></i> search players...</label>
+	         <input ng-model="vm.query" ng-change="vm.search()" ng-disabled="vm.isReady" />
+	     </md-input-container>
+	   </div>
+		<div class="md-padding" layout="column">
+			<md-list class="fixedRows">
+				<md-list-item class="md-2-line" ng-repeat="player in vm.players" ng-click="vm.addPlayer(player)">
+					<div class="md-list-item-text compact">
+						<h4>{{player.name}}</h4>
+						<p>{{player.email}}</p>
+					</div>
+				</md-list-item>
+			</md-list>
+		</div>
+	</md-content>
 </md-content>
