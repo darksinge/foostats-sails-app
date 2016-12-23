@@ -19,6 +19,10 @@
 .layout-fill {
    height: 100%;
 }
+.timer {
+	color: white;
+	text-align: center;
+}
 </style>
 <body ng-app="gameApp" id="gameOverviewContainer" ng-cloak>
 
@@ -44,10 +48,13 @@
       <md-toolbar class="md-hue-2" layout>
          <div class="md-toolbar-tools">
             <md-button class="md-no-sticky md-button" ng-click="vm.go('/')">Foostats</md-button>
-            <span flex></span>
-            <md-button class="md-button md-accent" aria-label="Game" ng-click="openLeftMenu()">
-               <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
-            </md-button>
+            <p  class="timer" ng-if="vm.gameDidStart" flex>{{vm.timerDisplayText}}</p>
+				<span flex ng-if="!vm.gameDidStart"></span>
+				<div>
+					<md-button class="md-button md-accent" aria-label="Game" ng-click="openLeftMenu()">
+	               <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
+	            </md-button>
+				</div>
          </div>
       </md-toolbar>
       <span ng-view></span>

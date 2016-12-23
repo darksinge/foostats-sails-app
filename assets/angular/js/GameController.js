@@ -7,15 +7,16 @@ const MAX_PLAYERS = 4;
 	angular.module('gameApp')
 	.controller('GameController', GameController);
 
-	GameController.$inject = ['$scope', '$http', '$window', '$location', '$mdSidenav', '$mdDialog'];
+	GameController.$inject = ['$scope', '$http', '$window', '$location', '$mdSidenav', '$mdDialog', '$timeout'];
 
-	function GameController($scope, $http, $window, $location, $mdSidenav, $mdDialog) {
+	function GameController($scope, $http, $window, $location, $mdSidenav, $mdDialog, $timeout) {
 		var vm = this;
 
 		vm.environment = 'development';
 
+		vm.timerDisplayText = '0:00';
 		vm.gameStartTime;
-		vm.gameLength = 0;
+		vm.gameLengthInSeconds = -1;
 
 		vm.players = [];
 		vm.playerNames = [];
@@ -24,7 +25,6 @@ const MAX_PLAYERS = 4;
 		vm.canAddPlayers = true;
 		vm.buttonsDisabled = false;
 		vm.gameDidStart = false;
-		vm.previousPath = $location.path();
 
 		vm.selectedPlayers = [];
 
@@ -110,7 +110,7 @@ const MAX_PLAYERS = 4;
 		}
 
 		vm.displayGameOverDialog = function() {
-			var displayText = 'Game Stats' + '\n' + 'Game Length: ' + vm.gameLength;
+			var displayText = 'Game Stats' + '\n' + 'Game Length: ' + vm.gameLengthInSeconds;
 			var alert = $mdDialog.alert()
 			.parent(angular.element(document.querySelector('#gameOverviewContainer')))
 			.clickOutsideToClose(false)
@@ -190,6 +190,7 @@ const MAX_PLAYERS = 4;
 		vm.startGame = function() {
 			vm.gameDidStart = true;
 			vm.gameStartTime = new Date();
+			vm.startClock();
 			vm.changeView('/play/game');
 			vm.player1 = vm.getBlueTeam()[0];
 			vm.player2 = vm.getBlueTeam()[1];
@@ -198,7 +199,7 @@ const MAX_PLAYERS = 4;
 		}
 
 		vm.saveGame = function(done) {
-			vm.gameLength = (vm.gameStartTime - new Date()) / 1000;
+			vm.gameLengthInSeconds = (vm.gameStartTime - new Date()) / 1000;
 			return done();
 		}
 
@@ -245,6 +246,16 @@ const MAX_PLAYERS = 4;
 
 			vm.canAddPlayers = true;
 			vm.gameCanStart = false;
+		}
+
+		vm.startClock = function() {
+			vm.gameLengthInSeconds++;
+			var minutes = Math.floor(vm.gameLengthInSeconds / 60);
+			var seconds = vm.gameLengthInSeconds - (minutes * 60);
+			var minuteText = '' + minutes;
+			var secondsText = seconds > 9 ? '' + seconds : '0' + seconds;
+			vm.timerDisplayText = minuteText + ':' + secondsText;
+			if (vm.gameDidStart) { $timeout(vm.startClock, 1000); }
 		}
 
 		vm.search = function() {
