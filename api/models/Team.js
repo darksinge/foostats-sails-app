@@ -29,11 +29,12 @@ module.exports = {
       games: {
          collection: 'game',
          via: 'game',
-         through: 'statistics'
+         through: 'teamgame'
       },
       players: {
          collection: 'player',
-         via: 'teams'
+         via: 'teams',
+			through: 'teamplayer'
       },
       leagues: {
          collection: 'league',

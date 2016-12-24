@@ -40,7 +40,7 @@ module.exports = {
     teams: {
       collection: 'team',
       via: 'team',
-      through: 'statistics'
+      through: 'teamgame'
     }
   },
 
