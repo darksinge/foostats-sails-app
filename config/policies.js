@@ -26,7 +26,7 @@ module.exports.policies = {
    *                                                                          *
    ***************************************************************************/
    '*': ['sessionAuth'],
-
+   
    UserController: {
       '*': ['sessionAuth', 'addLocals'],
    },

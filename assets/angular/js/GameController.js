@@ -3,7 +3,8 @@ const MAX_PLAYERS = 4;
 
 var initial_button_height;
 function fix_button_height_for_small_windows() {
-	var height = $(window).height();
+	if ($('.score-button').length == 0) return false;
+	var height = window.innerHeight;
 	if (!initial_button_height) {
 	 	initial_button_height = $('.score-button').height();
  	}
@@ -15,6 +16,7 @@ function fix_button_height_for_small_windows() {
 	} else {
 		$('.score-button').css('height', initial_button_height + 'px');
 	}
+	return true;
 }
 $(window).on('resize', fix_button_height_for_small_windows);
 
@@ -29,7 +31,11 @@ $(window).on('resize', fix_button_height_for_small_windows);
 	function GameController($scope, $http, $window, $location, $mdSidenav, $mdDialog, $timeout, $document, APIService) {
 		var vm = this;
 
-		setTimeout(fix_button_height_for_small_windows, 250);
+		var interval = setInterval(function() {
+			if (fix_button_height_for_small_windows()) {
+				clearInterval(interval);
+			}
+		}, 50)
 
 		vm.environment = 'development';
 
@@ -40,7 +46,7 @@ $(window).on('resize', fix_button_height_for_small_windows);
 		vm.players = [];
 		vm.playerNames = [];
 		vm.query = '';
-		vm.gameCanStart = false;
+		vm.gameCanStart = true;
 		vm.canAddPlayers = true;
 		vm.buttonsDisabled = false;
 		vm.gameDidStart = false;
@@ -137,7 +143,7 @@ $(window).on('resize', fix_button_height_for_small_windows);
 				vm.players = [];
 				vm.playerNames = [];
 				vm.query = '';
-				vm.gameCanStart = false;
+				vm.gameCanStart = true;
 				vm.canAddPlayers = true;
 				vm.buttonsDisabled = false;
 				vm.gameDidStart = false;
@@ -293,7 +299,7 @@ $(window).on('resize', fix_button_height_for_small_windows);
 
 			if (vm.selectedPlayers.length < 4) {
 				vm.canAddPlayers = true;
-				vm.gameCanStart = false;
+				vm.gameCanStart = true;
 			} else if (vm.selectedPlayers.length == 4) {
 				vm.canAddPlayers = false;
 				vm.gameCanStart = true;
@@ -312,7 +318,7 @@ $(window).on('resize', fix_button_height_for_small_windows);
 			}
 
 			vm.canAddPlayers = true;
-			vm.gameCanStart = false;
+			vm.gameCanStart = true;
 		}
 
 		vm.startClock = function() {

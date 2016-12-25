@@ -39,7 +39,7 @@ module.exports.routes = {
 
    '/': {
       controller: 'PublicController',
-      action: 'index'
+      action: 'index',
    },
 
    'GET /login': 'PublicController.login',
