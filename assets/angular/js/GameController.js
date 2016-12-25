@@ -1,6 +1,23 @@
 
 const MAX_PLAYERS = 4;
 
+var initial_button_height;
+function fix_button_height_for_small_windows() {
+	var height = $(window).height();
+	if (!initial_button_height) {
+	 	initial_button_height = $('.score-button').height();
+ 	}
+	if (height < 650) {
+		var diff = 650 - height;
+		var less = diff / 4;
+		var new_button_height = initial_button_height - less;
+		$('.score-button').css('height', new_button_height + 'px');
+	} else {
+		$('.score-button').css('height', initial_button_height + 'px');
+	}
+}
+$(window).on('resize', fix_button_height_for_small_windows);
+
 (function() {
 	'use strict';
 
@@ -12,7 +29,7 @@ const MAX_PLAYERS = 4;
 	function GameController($scope, $http, $window, $location, $mdSidenav, $mdDialog, $timeout, $document, APIService) {
 		var vm = this;
 
-
+		setTimeout(fix_button_height_for_small_windows, 250);
 
 		vm.environment = 'development';
 

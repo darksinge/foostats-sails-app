@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" ng-app="gameApp" ng-cloak>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,49 +16,46 @@
 
 </head>
 <style media="screen">
-.layout-fill {
-   height: 100%;
-}
 .timer {
-	color: white;
-	text-align: center;
+   color: white;
+   text-align: center;
 }
 </style>
-<body ng-app="gameApp" id="gameOverviewContainer" ng-cloak>
+<body ng-controller="GameController as vm" id="gameOverviewContainer">
 
-   <div ng-controller="GameController as vm">
-      <md-sidenav md-component-id="left" class="md-sidenav-left">
-         <md-list>
-            <md-subheader class="md-no-sticky">Menu</md-subheader>
-            <md-list-item ng-click="vm.go('/dashboard')">
-               <md-icon><i class="fa fa-user fa-lg" aria-hidden="true"></i></md-icon>
-               <p>Dashboard</p>
-            </md-list-item>
-            <md-list-item ng-click="vm.go('/play')">
-               <md-icon><i class="fa fa-trophy fa-lg" aria-hidden="true"></i></md-icon>
-               <p>Game Menu</p>
-            </md-list-item>
-            <md-list-item ng-click="vm.go('/logout')">
-               <md-icon><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i></md-icon>
-               <p>Logout</p>
-            </md-list-item>
-            <md-subheader class="md-no-sticky"></md-subheader>
-         </md-list>
-      </md-sidenav>
-      <md-toolbar class="md-hue-2" layout>
-         <div class="md-toolbar-tools">
-            <md-button class="md-no-sticky md-button" ng-click="vm.go('/')">Foostats</md-button>
-            <p  class="timer" ng-if="vm.gameDidStart" flex>{{vm.timerDisplayText}}</p>
-				<span flex ng-if="!vm.gameDidStart"></span>
-				<div>
-					<md-button class="md-button md-accent" aria-label="Game" ng-click="openLeftMenu()">
-	               <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
-	            </md-button>
-				</div>
+
+   <md-sidenav md-component-id="left" class="md-sidenav-left">
+      <md-list>
+         <md-subheader class="md-no-sticky">Menu</md-subheader>
+         <md-list-item ng-click="vm.go('/dashboard')">
+            <md-icon><i class="fa fa-user fa-lg" aria-hidden="true"></i></md-icon>
+            <p>Dashboard</p>
+         </md-list-item>
+         <md-list-item ng-click="vm.go('/play')">
+            <md-icon><i class="fa fa-trophy fa-lg" aria-hidden="true"></i></md-icon>
+            <p>Game Menu</p>
+         </md-list-item>
+         <md-list-item ng-click="vm.go('/logout')">
+            <md-icon><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i></md-icon>
+            <p>Logout</p>
+         </md-list-item>
+         <md-subheader class="md-no-sticky"></md-subheader>
+      </md-list>
+   </md-sidenav>
+   <md-toolbar class="md-hue-2" layout>
+      <div class="md-toolbar-tools">
+         <md-button class="md-no-sticky md-button" ng-click="vm.go('/')">Foostats</md-button>
+         <p  class="timer" ng-if="vm.gameDidStart" flex>{{vm.timerDisplayText}}</p>
+         <span flex ng-if="!vm.gameDidStart"></span>
+         <div>
+            <md-button class="md-button md-accent" aria-label="Game" ng-click="openLeftMenu()">
+               <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
+            </md-button>
          </div>
-      </md-toolbar>
-      <span ng-view></span>
-   </div>
+      </div>
+   </md-toolbar>
+   <span ng-view></span>
+
 
 
    <!-- JQuery -->

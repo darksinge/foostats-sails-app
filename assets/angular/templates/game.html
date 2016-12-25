@@ -1,17 +1,16 @@
 <style media="screen">
-   .blue-button {
-      min-height: 100px;
-      min-width: 100px;
-      background-color: blue !important;
+   .score-button {
       color: white;
       margin-right: 5px;
+      height: 100px;
+      width: 100px;
+      font-size: 2em;
+   }
+   .blue-button {
+      background-color: blue;
    }
    .red-button {
-      min-height: 100px;
-      min-width: 100px;
-      background-color: red !important;
-      color: white;
-      margin-right: 5px;
+      background-color: red;
    }
    .blue-team {
       height: 50%;
@@ -25,9 +24,31 @@
       font-size: 14px;
    }
    .md-subheader .md-subheader-inner {
-      margin: 8px 0 0 32px !important;
-      padding: 0 0 0 0!important;
+      margin: 8px 0 0 32px;
+      padding: 0 0 0 0;
    }
+   body {
+      height: initial;
+   }
+   /*
+   @media screen and (max-height: 650px) {
+      .score-button {
+         min-height: initial;
+         height: 30%;
+      }
+      .blue-team {
+         height: initial;
+      }
+      .red-team {
+         height: initial;
+      }
+   }
+   @media screen and (max-height: 480px) {
+      .score-button {
+         height: 20%;
+      }
+   }
+   */
 </style>
 
 <!-- <script>
@@ -38,7 +59,7 @@
    })
 </script> -->
 
-<div class="layout-fill" layout="column" layout-padding>
+<div layout="column" layout-padding id="game-container">
    <div class="blue-team">
       <div layout>
          <div flex>
@@ -53,11 +74,11 @@
          <md-subheader flex class="header md-no-sticky">Points: {{vm.player1Score}}</md-subheader>
       </div>
       <div layout layout-align="space-around center">
-         <md-button class="blue-button" ng-click="vm.addPoint(1)" ng-disabled="vm.buttonsDisabled">
-            <h1>+</h1>
+         <md-button class="score-button blue-button" ng-click="vm.addPoint(1)" ng-disabled="vm.buttonsDisabled">
+            +
          </md-button>
-         <md-button class="blue-button" ng-click="vm.minusPoint(1)" ng-disabled="vm.buttonsDisabled">
-            <h1>-</h1>
+         <md-button class="score-button blue-button" ng-click="vm.minusPoint(1)" ng-disabled="vm.buttonsDisabled">
+            -
          </md-button>
       </div>
       <div layout>
@@ -65,11 +86,11 @@
          <md-subheader flex class="header md-no-sticky">Points: {{vm.player2Score}}</md-subheader>
       </div>
       <div layout layout-align="space-around center">
-         <md-button class="blue-button" ng-click="vm.addPoint(2)" ng-disabled="vm.buttonsDisabled">
-            <h1>+</h1>
+         <md-button class="score-button blue-button" ng-click="vm.addPoint(2)" ng-disabled="vm.buttonsDisabled">
+            +
          </md-button>
-         <md-button class="blue-button" ng-click="vm.minusPoint(2)" ng-disabled="vm.buttonsDisabled">
-            <h1>-</h1>
+         <md-button class="score-button blue-button" ng-click="vm.minusPoint(2)" ng-disabled="vm.buttonsDisabled">
+            -
          </md-button>
       </div>
    </div>
@@ -79,11 +100,11 @@
          <md-subheader flex class="header md-no-sticky">Points: {{vm.player3Score}}</md-subheader>
       </div>
       <div layout layout-align="space-around center">
-         <md-button class="red-button" ng-click="vm.addPoint(3)" ng-disabled="vm.buttonsDisabled">
-            <h1>+</h1>
+         <md-button class="score-button red-button" ng-click="vm.addPoint(3)" ng-disabled="vm.buttonsDisabled">
+            +
          </md-button>
-         <md-button class="red-button" ng-click="vm.minusPoint(3)" ng-disabled="vm.buttonsDisabled">
-            <h1>-</h1>
+         <md-button class="score-button red-button" ng-click="vm.minusPoint(3)" ng-disabled="vm.buttonsDisabled">
+            -
          </md-button>
       </div>
       <div layout>
@@ -91,11 +112,11 @@
          <md-subheader flex class="header md-no-sticky">Points: {{vm.player4Score}}</md-subheader>
       </div>
       <div layout layout-align="space-around center">
-         <md-button class="red-button" ng-click="vm.addPoint(4)" ng-disabled="vm.buttonsDisabled">
-            <h1>+</h1>
+         <md-button class="score-button red-button" ng-click="vm.addPoint(4)" ng-disabled="vm.buttonsDisabled">
+            +
          </md-button>
-         <md-button class="red-button" ng-click="vm.minusPoint(4)" ng-disabled="vm.buttonsDisabled">
-            <h1>-</h1>
+         <md-button class="score-button red-button" ng-click="vm.minusPoint(4)" ng-disabled="vm.buttonsDisabled">
+            -
          </md-button>
       </div>
    </div>
