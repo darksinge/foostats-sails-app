@@ -64,7 +64,6 @@ module.exports = {
       },
       toJSON: function() {
          var obj = this.toObject();
-         obj.teams = [obj.blueTeam, obj.redTeam];
          return obj;
       }
    },
