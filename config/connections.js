@@ -50,13 +50,7 @@ module.exports.connections = {
 
    clearDbServer: {
       adapter: 'sails-mysql',
-      //  url: process.env.CLEARDB_DATABASE_URL,
-      // url: 'mysql://gvw7kn6djzayfv8a:yrf5fpeypdl34nrz@rtzsaka6vivj2zp1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/je1xpnmgciwd4lk8',
-      host: 'us-cdbr-iron-east-04.cleardb.net',
-      port: 3306,
-      user: 'bb217a18f0f81c',
-      password: '30775470',
-      database: 'heroku_cf5844878ef4232',
+      url: process.env.CLEARDB_DATABASE_URL,
       acquireTimeout: 100000,
       connectTimeout: 100000
    }
