@@ -25,8 +25,8 @@ module.exports.policies = {
    * access)                                                                  *
    *                                                                          *
    ***************************************************************************/
-   '*': ['sessionAuth'],
-   
+   // '*': ['sessionAuth'],
+
    UserController: {
       '*': ['sessionAuth', 'addLocals'],
    },
@@ -71,9 +71,9 @@ module.exports.policies = {
    //    '*': true
    // },
 
-   APIController: {
-      '*': ['sessionAuth']
-   }
+   // APIController: {
+   //    '*': ['sessionAuth']
+   // }
 
    /***************************************************************************
    *                                                                          *

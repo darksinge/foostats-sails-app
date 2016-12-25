@@ -9,7 +9,7 @@ module.exports = {
 	index: function(req, res) {
 		return res.view('user/game', {
 			layout: 'gameLayout'
-		})
+		});
 	},
 
 	saveGame: function(req, res) {

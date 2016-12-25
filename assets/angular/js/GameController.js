@@ -4,14 +4,14 @@ const MAX_PLAYERS = 4;
 var initial_button_height;
 function fix_button_height_for_small_windows() {
 	if ($('.score-button').length == 0) return false;
-	var height = window.innerHeight;
+	var height = window.screen.availHeight || window.innerHeight || $(window).height();
 	if (!initial_button_height) {
 	 	initial_button_height = $('.score-button').height();
  	}
 	if (height < 650) {
 		var diff = 650 - height;
 		var less = diff / 4;
-		var new_button_height = initial_button_height - less;
+		var new_button_height = Math.round((initial_button_height - less) * 0.9);
 		$('.score-button').css('height', new_button_height + 'px');
 	} else {
 		$('.score-button').css('height', initial_button_height + 'px');

@@ -72,12 +72,10 @@ module.exports.routes = {
    'GET /player/:id': 'PlayerController.findOne',
 
    // Game routes
+   // '/play': 'APIController.index',
    '/play': {
       controller: 'APIController',
-      view: 'user/game',
-      locals: {
-         layout: 'gameLayout'
-      }
+      action: 'index'
    },
    'GET /play/players/search': 'APIController.search',
    'POST /api/team/findorcreate': 'APIController.findOrCreateTeam',
