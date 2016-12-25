@@ -7,10 +7,12 @@ const MAX_PLAYERS = 4;
 	angular.module('gameApp')
 	.controller('GameController', GameController);
 
-	GameController.$inject = ['$scope', '$http', '$window', '$location', '$mdSidenav', '$mdDialog', '$timeout'];
+	GameController.$inject = ['$scope', '$http', '$window', '$location', '$mdSidenav', '$mdDialog', '$timeout', '$document', 'APIService'];
 
-	function GameController($scope, $http, $window, $location, $mdSidenav, $mdDialog, $timeout) {
+	function GameController($scope, $http, $window, $location, $mdSidenav, $mdDialog, $timeout, $document, APIService) {
 		var vm = this;
+
+
 
 		vm.environment = 'development';
 
@@ -32,6 +34,9 @@ const MAX_PLAYERS = 4;
 		vm.player2Score = 0;
 		vm.player3Score = 0;
 		vm.player4Score = 0;
+
+		vm.blueTeamFromQuery;
+		vm.redTeamFromQuery;
 
 		vm.blueTeamScore = vm.player1Score + vm.player2Score;
 		vm.redTeamScore = vm.player3Score + vm.player4Score;
@@ -97,24 +102,42 @@ const MAX_PLAYERS = 4;
 			if (vm.redTeamScore < 0) vm.redTeamScore = 0;
 
 			if (vm.blueTeamScore >= 10 || vm.redTeamScore >= 10) {
-				vm.buttonsDisabled = true;
-				if (vm.blueTeamScore >= 10) {
-					vm.winningTeam = 'Blue Team';
-				} else {
-					vm.winningTeam = 'Red Team';
-				}
-				vm.saveGame(function(err) {
-					vm.displayGameOverDialog();
-				});
+				vm.endGame();
 			}
 		}
 
-		vm.displayGameOverDialog = function() {
+		vm.endGame = function() {
+			var winningTeam;
+			if (vm.blueTeamScore >= 10) {
+				winningTeam = 'Blue Team';
+			} else {
+				winningTeam = 'Red Team';
+			}
+			vm.saveGame(function(err, game) {
+				vm.timerDisplayText = '0:00';
+				vm.gameStartTime = null;
+				vm.gameLengthInSeconds = -1;
+				vm.players = [];
+				vm.playerNames = [];
+				vm.query = '';
+				vm.gameCanStart = false;
+				vm.canAddPlayers = true;
+				vm.buttonsDisabled = false;
+				vm.gameDidStart = false;
+				vm.buttonsDisabled = true;
+
+				if (err) console.error('Error: ', err);
+				vm.displayGameOverDialog(winningTeam);
+			});
+
+		}
+
+		vm.displayGameOverDialog = function(winningTeam) {
 			var displayText = 'Game Stats' + '\n' + 'Game Length: ' + vm.gameLengthInSeconds;
 			var alert = $mdDialog.alert()
 			.parent(angular.element(document.querySelector('#gameOverviewContainer')))
 			.clickOutsideToClose(false)
-			.title(vm.winningTeam + ' won!')
+			.title(winningTeam + ' won!')
 			.textContent('Game Stats.')
 			.ariaLabel('Game Overview')
 			.ok('Okay')
@@ -122,6 +145,7 @@ const MAX_PLAYERS = 4;
 			$mdDialog.show(alert)
 			.then(function() {
 				$location.path('/play');
+				vm.buttonsDisabled = false;
 				// $window.location.href = '/play';
 			});
 
@@ -196,16 +220,42 @@ const MAX_PLAYERS = 4;
 			vm.player2 = vm.getBlueTeam()[1];
 			vm.player3 = vm.getRedTeam()[0];
 			vm.player4 = vm.getRedTeam()[1];
+
+			// Use vm.player# for game logic, then find or create actual teams in/from database... just because thats how I said it's gonna be.
+			APIService.findOrCreateTeam(vm.player1, vm.player2, function(err, team) {
+				if (err) console.error(err);
+				if (team) {
+					vm.blueTeamFromQuery = team;
+					console.log('Found/Created Team: ', vm.blueTeamFromQuery.name);
+				}
+			});
+			APIService.findOrCreateTeam(vm.player3, vm.player4, function(err, team) {
+				if (err) console.error(err);
+				if (team) {
+					vm.redTeamFromQuery = team;
+					console.log('Found/Created Team: ', vm.redTeamFromQuery.name);
+				}
+			});
 		}
 
-		vm.saveGame = function(done) {
-			vm.gameLengthInSeconds = (vm.gameStartTime - new Date()) / 1000;
-			return done();
+		vm.saveGame = function(next) {
+			console.log('GameLengthWhenSaved: ' + vm.gameLengthInSeconds);
+			var data = {};
+			data.blueTeamId = vm.blueTeamFromQuery.uuid;
+			data.redTeamId = vm.redTeamFromQuery.uuid;
+			data.player1Score = vm.player1Score;
+			data.player2Score = vm.player2Score;
+			data.player3Score = vm.player3Score;
+			data.player4Score = vm.player4Score;
+			data.gameLengthInSeconds = vm.gameLengthInSeconds;
+			APIService.saveGame(data, function(err, game){
+				if (err) console.error('Error: ', err);
+				if (game) console.log('Game Saved!');
+				return next(err);
+			});
 		}
 
 		vm.addPlayer = function(player) {
-
-
 			var actualPlayerCount = 0;
 			for (var i = 0; i < MAX_PLAYERS; i++) {
 				if (typeof vm.selectedPlayers[i] == 'undefined') {
@@ -259,25 +309,20 @@ const MAX_PLAYERS = 4;
 		}
 
 		vm.search = function() {
-			$http.get('/play/players/search?keywords=' + vm.query)
-			.then(function(data) {
-				var players = data.data.players;
-
-				for (var i = 0; i < vm.selectedPlayers.length; i++) {
-					for (var n = 0; n < players.length; n++) {
-						if (vm.selectedPlayers[i].uuid == players[n].uuid) {
-							players.splice(n, 1);
+			APIService.searchPlayers(vm.query, function(err, players) {
+				if (players) {
+					for (var i = 0; i < vm.selectedPlayers.length; i++) {
+						for (var n = 0; n < players.length; n++) {
+							if (vm.selectedPlayers[i].uuid == players[n].uuid) {
+								players.splice(n, 1);
+							}
 						}
 					}
+					vm.players = players;
+					// console.log('selected players total: ' + vm.selectedPlayers.length + '.');
+					// console.log('found ' + (players.length + 1) + ' players.');
+					// console.log('displaying ' + vm.players.length + ' players.');
 				}
-
-				vm.players = players;
-				console.log('selected players total: ' + vm.selectedPlayers.length + '.');
-				console.log('found ' + (players.length + 1) + ' players.');
-				console.log('displaying ' + vm.players.length + ' players.');
-			})
-			.catch(function(err) {
-				console.error('', err);
 			});
 		}
 	}

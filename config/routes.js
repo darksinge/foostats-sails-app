@@ -73,13 +73,15 @@ module.exports.routes = {
 
    // Game routes
    '/play': {
-      controller: 'FoosballGameController',
+      controller: 'APIController',
       view: 'user/game',
       locals: {
          layout: 'gameLayout'
       }
    },
-   'GET /play/players/search': 'FoosballGameController.search',
+   'GET /play/players/search': 'APIController.search',
+   'POST /api/team/findorcreate': 'APIController.findOrCreateTeam',
+   'POST /api/game/save': 'APIController.saveGame',
 
    // Dev routes
    '/dev/test': 'DevController.test',

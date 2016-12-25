@@ -71,7 +71,7 @@ module.exports.policies = {
    //    '*': true
    // },
 
-   FoosballGameController: {
+   APIController: {
       '*': ['sessionAuth']
    }
 

@@ -35,8 +35,8 @@ module.exports = {
 		lastName: 'string',
 		teams: {
 			collection: 'team',
-			via: 'players',
-			dominant: true
+			via: 'team',
+			through: 'teamplayer'
 		},
 		achievements: {
 			collection: 'achievement',
@@ -51,10 +51,11 @@ module.exports = {
 			}
 		},
 		facebookId: {
-			type: 'string',
-			unique: true
+			type: 'string'
 		},
-		facebookToken: 'string',
+		facebookToken: {
+			type: 'string'
+		},
 		username: 'string',
 		connections: {
 			collection: 'player',

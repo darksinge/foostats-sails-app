@@ -2,7 +2,8 @@
    'use strict';
 
    angular.module('gameApp', ['ngMaterial', 'ngRoute'])
-   .config(function($routeProvider) {
+   .config(function($routeProvider, $httpProvider) {
+      
       $routeProvider
       .when('/play', {
          templateUrl: '/angular/templates/menu.html'
