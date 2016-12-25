@@ -1,0 +1,36 @@
+.score-button {
+   color: white;
+   margin-right: 5px;
+   height: 100px;
+   width: 100px;
+   font-size: 2em;
+}
+.blue-button:not([disabled]):hover,
+.blue-button:hover,
+.blue-button {
+   background-color: #3F51B5;
+}
+.red-button:not([disabled]):hover,
+.red-button:hover,
+.red-button {
+   background-color: #F44336;
+}
+.blue-team {
+   height: 50%;
+}
+.red-team {
+   height: 50%;
+}
+team-header {
+   margin: 3px;
+   padding: 0;
+   font-size: 16px;
+   font-weight: bold;
+}
+.md-subheader .md-subheader-inner {
+   margin: 8px 0 0 32px;
+   padding: 0 0 0 0;
+}
+body {
+   height: initial;
+}
